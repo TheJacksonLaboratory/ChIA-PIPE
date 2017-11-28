@@ -1,0 +1,158 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=20:00:00
+#PBS -l mem=60GB
+#PBS -l vmem=60GB
+#PBS -j oe
+
+
+# ChIA-PET Tool 2
+#         Step 1: Filter the linker sequence
+#         (Requires single-linker ChIA-PET data)
+# 2017
+# The Jackson Laboratory for Genomic Medicine
+
+
+## The help message:
+function usage
+{
+    echo -e "usage: qsub -F \"--conf CONF --out_dir OUT_DIR\" 1.filter_linker.pbs
+    " 
+}
+
+## Default values for the arguments
+main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
+run="LHG0018"
+data_dir="/Sequence_pool/bridge_chiapet/data/"
+out_dir="/projects/capurd/testing_chia_pet_3/${run}"
+all_steps=true
+
+## Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --conf )           shift
+                                conf=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+## Load required module
+module load pigz
+
+## Move to output directory
+cd ${PBS_O_WORKDIR}
+source ${conf}
+mkdir -p ${out_dir}
+cd ${out_dir}
+
+## Create name of the log file
+log_file=1.${run}.filter_linker.log
+
+## Report arguments parsed
+echo "
+Arguments:
+    main_prog=${main_prog}
+    run=${run}
+    data_dir=${data_dir}
+    out_dir=${out_dir}
+" >> ${log_file}
+
+
+## Perform linker detection and generate different categories of fastq files
+# Report linker detection start
+echo "
+`date` --- Linker detection started on: ---
+    ${data_dir}/${run}_R1.fastq.gz,
+    ${data_dir}/${run}_R2.fastq.gz
+" >> ${log_file}
+
+# Linker detection
+n_thread=20
+
+${main_prog} stag -W -T 18 -t ${n_thread} -O ${run} \
+    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+    2>> ${log_file}
+
+# Report linker detection completion
+echo -e "`date` --- Linker detection completed ----\n" >> ${log_file}
+
+
+## Get the statistics
+# Report statistics start
+echo "
+`date` --- Statistics started  ----
+" >> ${log_file}
+
+# Statistics
+${main_prog} stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
+    2>> ${log_file} 1> ${run}.stat
+
+# Report statistics completion
+echo -e "`date` --- Statistics completed  ----\n" >> ${log_file}
+
+
+## Compress files
+pigz -p ${n_thread} ${run}.singlelinker.paired.fastq 2>> ${log_file}
+pigz -p ${n_thread} ${run}.none.fastq 2>> ${log_file}
+
+pigz -p ${n_thread} ${run}.singlelinker.single.fastq 2>> ${log_file}
+pigz -p ${n_thread} ${run}.conflict.fastq 2>> ${log_file}
+pigz -p ${n_thread} ${run}.tied.fastq 2>> ${log_file}
+
+
+## Report script completion
+echo -e "$0 done \n" >> ${log_file}
+echo "`date`" >> ${log_file}
+
+
+# Submit next step of pipeline
+if [ ${all_steps} == true ]
+then
+    # Set the resource parameters for the computing cluster
+    # depending on the run type (miseq or hiseq)
+    n_thread=20
+    mem=60
+    
+    if [ ${run_type} == "miseq" ]
+    then
+        wall_time=10
+    elif [ ${run_type} == "hiseq" ] || [ ${run_type} == "nextseq" ]
+    then
+        wall_time=40
+    else
+        wall_time=100
+    fi
+    
+    ### 2. Mapping
+    # Submit a separate job for each category of reads
+    # (none, singlelinker.single, singlelinker.paired)
+    job_2a=$( qsub -F \
+    "--conf ${conf} --out_dir ${out_dir} --tag_name none" \
+    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -j oe -o ${out_dir}/2.${run}.map.none.o \
+    ${bin_dir}/2.map.pbs )
+
+
+    job_2b=$( qsub -F \
+    "--conf ${conf} --out_dir ${out_dir} --tag_name singlelinker.single" \
+    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -j oe -o ${out_dir}/2.${run}.map.singlelinker.single.o \
+    ${bin_dir}/2.map.pbs )
+
+
+    job_2c=$( qsub -F \
+    "--conf ${conf} --out_dir ${out_dir} --tag_name singlelinker.paired" \
+    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -j oe -o ${out_dir}/2.${run}.map.singlelinker.paired.o \
+    ${bin_dir}/2.map.pbs )
+
+fi

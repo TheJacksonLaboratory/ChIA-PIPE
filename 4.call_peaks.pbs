@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=10
+#PBS -l walltime=6:00:00
+#PBS -l mem=30GB
+#PBS -j oe
+
+
+# ChIA-PET Tool 2
+#         Step 4: Perform peak calling
+# 2017
+# The Jackson Laboratory for Genomic Medicine
+
+
+# Default values for the arguments
+run="LHG0018"
+peak_caller="macs2"
+input_control="/projects/capurd/chia_pet/test_data/OUTPUT_mapped.sC.q20.bam"
+bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2.1"
+out_dir="/projects/capurd/testing_chia_pet"
+all_steps=true
+
+# The help message:
+function usage
+{
+    echo -e "usage: qsub -F \"--conf CONF --out_dir OUT_DIR\" 4.call_peaks.pbs
+    " 
+}
+
+# Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --conf )           shift
+                                conf=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+# Put output files in subdirectory named after the run
+cd ${PBS_O_WORKDIR}
+source ${conf}
+cd ${out_dir}
+
+# Load the required modules
+module load bedtools/2.22.0
+module load samtools/0.1.19
+
+
+# Create name of the log file
+log_file=4.${run}.call_peaks.log
+
+
+# Print arguments to ensure correct parsing
+echo "
+Arguments:
+    run=${run}
+    peak_caller=${peak_caller}
+    input_control=${input_control}
+    bin_dir=${bin_dir}
+    out_dir=${out_dir}
+" >> ${log_file}
+
+
+## Perform ChIP-Seq peak calling and plot density from ChIA-PET data
+if [ ${peak_caller} == "spp" ] || [ ${peak_caller} == "SPP" ]
+then
+    # Load R
+    module load R/3.2.1
+    
+    # Report SPP to log file
+    echo -e "`date` Peak calling using SPP..\n" >> ${log_file}
+    
+    # Call peaks using SPP
+    R --vanilla < ${bin_dir}/spp.R --args ${run}.for.BROWSER.bam \
+        ${input_control} ${bin_dir}
+else
+    # Load MACS2
+    module load MACS/2.1.0.20151222
+    
+    # Report MACS2 to log file
+    echo -e "`date` Peak calling using MACS2..\n" >> ${log_file}
+    
+    if [ ${input_control} == 'none' ] || [ ${input_control} == 'None' ]
+    then
+        # Call peaks using MACS2 without input control
+        macs2 callpeak --keep-dup all --nomodel -t ${run}.for.BROWSER.bam \
+            -f BAM -g hs -n ${run}.no_input_all 1>> ${log_file} 2>> ${log_file}
+    else
+        # Call peaks using MACS2 with input control
+        macs2 callpeak --keep-dup all --nomodel -t ${run}.for.BROWSER.bam \
+            -c ${input_control} \
+            -f BAM -g hs -n ${run}.all 1>> ${log_file} 2>> ${log_file}
+    fi
+fi
+
+echo -e "`date` ENDED ${run} peak calling ..\n" >> ${log_file}
+echo "$0 done" >> ${log_file}
+
+if [ ${all_steps} == true ]
+then
+    n_thread=20
+    mem=60
+    wall_time=4
+    
+    ### 4. Extract summary stats
+    # Submit the job
+    job_5=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
+    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -j oe -o ${out_dir}/5.${run}.extract_summary_stats.o \
+    ${bin_dir}/5.extract_summary_stats.pbs )
+fi
