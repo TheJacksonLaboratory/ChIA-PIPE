@@ -21,7 +21,6 @@ function usage
 }
 
 ## Default values for the arguments
-main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
 run="LHG0018"
 data_dir="/Sequence_pool/bridge_chiapet/data/"
 out_dir="/projects/capurd/testing_chia_pet_3/${run}"
@@ -60,7 +59,6 @@ log_file=1.${run}.filter_linker.log
 ## Report arguments parsed
 echo "
 Arguments:
-    main_prog=${main_prog}
     run=${run}
     data_dir=${data_dir}
     out_dir=${out_dir}
@@ -78,7 +76,7 @@ echo "
 # Linker detection
 n_thread=20
 
-${main_prog} stag -W -T 18 -t ${n_thread} -O ${run} \
+${bin_dir}/cpu/cpu stag -W -T 18 -t ${n_thread} -O ${run} \
     ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
     2>> ${log_file}
 
@@ -93,7 +91,7 @@ echo "
 " >> ${log_file}
 
 # Statistics
-${main_prog} stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
+${bin_dir}/cpu/cpu stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
     2>> ${log_file} 1> ${run}.stat
 
 # Report statistics completion

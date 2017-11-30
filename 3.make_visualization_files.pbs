@@ -23,7 +23,6 @@ function usage
 }
 
 ## Default values for the arguments
-main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
 run="LHG0018"
 tag_name="none"
 genome="hg19"
@@ -83,7 +82,6 @@ log_file=3.${run}.make_visualization_files.log
 ## Print arguments to ensure correct parsing
 echo "
 Arguments:
-    main_prog=${main_prog}
     run=${run}
     tag_name=${tag_name}
     genome=${genome}
@@ -101,7 +99,7 @@ self_bp=8000
 echo -e "`date` --- STARTED ${run} clustering with ${exten_bp} bp"\
     "extension from each side --- \n" >> ${log_file}
 
-${main_prog} cluster -m -s ${self_bp} -B 1000 -5 5,0 -3 3,${exten_bp} \
+${bin_dir}/cpu/cpu cluster -m -s ${self_bp} -B 1000 -5 5,0 -3 3,${exten_bp} \
     -t ${n_thread} -j -x -v 1 -g  -O ${run}.e500 \
     ${run}.singlelinker.paired.UU.nr.bam 1>> ${log_file} 2>> ${log_file}
 
