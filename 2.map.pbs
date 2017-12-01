@@ -23,7 +23,6 @@ function usage
 }
 
 ## Default values for the arguments
-main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
 run="LHG0018"
 tag_name="none"
 genome="hg19"
@@ -86,7 +85,6 @@ log_file=2.${run}.map_${tag_name}.log
 ## Print arguments to ensure correct parsing
 echo "
 Arguments:
-    main_prog=${main_prog}
     run=${run}
     tag_name=${tag_name}
     genome=${genome}
@@ -110,7 +108,7 @@ echo "
 # Mapping
 n_thread=20
 
-${main_prog} memaln -T ${map_qual} -t ${n_thread} ${fasta} \
+${bin_dir}/cpu/cpu memaln -T ${map_qual} -t ${n_thread} ${fasta} \
     ${run}.${tag_name}.fastq.gz 1> ${run}.${tag_name}.sam 2>> ${log_file}
 
 # Compress files
@@ -124,7 +122,7 @@ echo -e "`date` --- Mapping completed ---\n" >> ${log_file}
 echo -e "`date` --- Pairing paired tags ---\n" >> ${log_file}
 
 # Pairing
-${main_prog} pair -S -q ${map_qual} -t ${n_thread} -s ${self_bp} \
+${bin_dir}/cpu/cpu pair -S -q ${map_qual} -t ${n_thread} -s ${self_bp} \
     ${run}.${tag_name}.sam.gz \
     1>${run}.${tag_name}.stat.xls 2>> ${log_file}
 
