@@ -5,19 +5,18 @@ workflow chia-pet {
     File config_file
     Array[File] fastqs 	# [end_id]
 
-
-    call split_fastqs { input :
+    # splitting two fastq files (one paired end run result)
+    # into three types of paired FASTQs:
+    # (A) none (no linker detected)
+    # (B) linker.single (linker found, but only one side was mappable)
+    # (C) linker.paired (linker found and both sides are mappable)
+    call fastq_splitting { input :
         fastqs = fastqs
     }
 
-    call demultiplex { input :
-        split_fastqs = split_fastqs.split_fastqs
-
-    }
-
-    scatter(fastqs_pair in demultiplex.split_fastqs) {
+    scatter(fastqs_pair in [fastq_splitting.none_fastqs, fastq_splitting.single_fastqs, fastq_splitting.paired_fastqs]) {
         call mapping { input :
-            fastqs = fastq_file
+            fastqs = paired_fastqs
         }
     }
 
@@ -26,23 +25,42 @@ workflow chia-pet {
     }
 
     call pairs_creation { input: 
-        bam = gather_bams.inker_paired_bam
+        bam = gather_bams.linker_paired_bam
     }
+
+    call loops_clustering { input :
+        pairs_file = pairs_creation.linker_paired_bam
+    }
+
+    # potentially here will come intermediate task of converting bam into pairs file
+    # otherwise it has to be repeated in .hic and .cool creation
 
     call hic_creation { input :
         pairs_file = pairs_creation.pairs_file
     }
 
+    call cooler_creation { input :
+        pairs_file = pairs_creation.pairs_file
+    }
+
+
+
+    # for peak calling use the merged bam file
+    call peak_calling { input :
+        pairs_file = pairs_creation.merged_bam
+
+    }
 }
 
 # workflow tasks 
 
-task split_fastqs {
+task fastq_splitting {
 	Array[File] fastqs 	# [end_id]
-    String linker
     
     command {
-
+        ${bin_dir}/cpu/cpu stag -W -T 18 -t ${n_thread} -O ${run} \
+            ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+            2>> ${log_file}
     }
 
     output {
@@ -50,10 +68,11 @@ task split_fastqs {
 		# so R1 and R2 can be switched, which results in an
 		# unexpected behavior of a workflow
 		# so we prepend <PREFIX>_fastqs_'end'_ (R1 or R2)
-        # the <PREFIX> is demultiplexed by special task (demultiplex)
 		# to the basename of original filename
 		# this prefix should be later stripped in a later task
-		Array[File] split_fastqs = glob("*fastqs_R?_*.fastq.gz")
+		Array[File] none_fastqs = glob("*none_fastqs_R?_*.fastq.gz")
+        Array[File] single_fastqs = glob("*single_fastqs_R?_*.fastq.gz")
+        Array[File] paired_fastqs = glob("*paired_fastqs_R?_*.fastq.gz")
 		File fastq_splitting_log = glob("*.splitting.log")[0]
 		File fastq_splitting_qc = glob("*.fastq_splitting.qc")[0]
 	}
@@ -68,13 +87,10 @@ task mapping {
 	Array[File] fastqs 	# [end_id]
 	
 	command {
-		python $(which encode_bowtie2.py) \
-			${idx_tar} \
-			${sep=' ' fastqs} \
-			${if paired_end then "--paired-end" else ""} \
-			${"--multimapping " + multimapping} \
-			${"--score-min " + score_min} \
-			${"--nth " + select_first([cpu,4])}
+
+		${bin_dir}/cpu/cpu memaln -T ${map_qual} -t ${n_thread} ${fasta} \
+            ${run}.${tag_name}.fastq.gz 1> ${run}.${tag_name}.sam 2>> ${log_file}
+
 	}
 	output {
 		File bam = glob("*.bam")[0]
@@ -157,21 +173,25 @@ task gather_bams {
 	}
 }
 
-task demultiplex {
-	Array[File] split_fastqs
+task pairs_creation {
+    File bam_file
 
-	command <<<
-		python <<CODE
-		
-        # python code that will stdout the pairs of splitted fastqs
-        # none pair
-        # linker.single pair
-        # linker.paired pair
-		
-        CODE
-	>>>
-	output {
-		# pair of true replicates
-		Array[Array[File]] pairs = read_tsv(stdout())
-	}
+    command {
+        juicer_shortform2pairs.pl bam_file
+    }
+
+    output {
+        File pairs_file = glob("*.bedGraph")[0]
+    }
 }
+
+
+# Question:
+# (1) What are file formats are input for hic and cool creation commands?
+# (2) Is FASTQ splitting highly parallelizable step? Why it needs 20 threads?
+# (3) Is FASTQ mapping highly parallelizable step? Why it needs 20 threads?
+# (4) in 2.map.pbs there is pairs creation, clustering and deduplication - I am not sure where is the paired file created? 
+# (5)
+#
+#
+#
