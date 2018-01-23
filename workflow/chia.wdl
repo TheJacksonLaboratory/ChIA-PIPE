@@ -55,26 +55,65 @@ workflow chia-pet {
 # workflow tasks 
 
 task fastq_splitting {
+	# Inputs
 	Array[File] fastqs 	# [end_id]
+    run # the sequencing run ID
+    
+    # Initialize log file
+    command {
+        log_file = 1.${run}.filter_linker.log
+    }
+    
+    
+    ## Filter linker
+    # Reads in the read pairs from separate R1 and R2 files
+    # Partitions the read pairs into different categories:
+    # 1. no linker, 2. linker - one tag, 3. linker - two tags,
+    # (4. conflict), (5. tied)
+    # For each category, writes out a FASTQ file containing both
+    # R1 and R2 reads
     
     command {
-        ${bin_dir}/cpu/cpu stag -W -T 18 -t ${n_thread} -O ${run} \
+        cpu/cpu stag -W -T 18 -t ${n_thread} -O ${run} \
             ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
             2>> ${log_file}
     }
-
+    
+    # Get linker statistics and write to file
+    command {
+        cpu/cpu stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
+            2>> ${log_file} 1> ${run}.stat
+    }
+    
+    
+    # Compress the partitioned FASTQ files
+    command {
+        # Three standard categories
+        pigz -p ${n_thread} ${run}.singlelinker.paired.fastq 2>> ${log_file}
+        pigz -p ${n_thread} ${run}.none.fastq 2>> ${log_file}
+        pigz -p ${n_thread} ${run}.singlelinker.single.fastq 2>> ${log_file}
+        
+        # Two accessory categories
+        pigz -p ${n_thread} ${run}.conflict.fastq 2>> ${log_file}
+        pigz -p ${n_thread} ${run}.tied.fastq 2>> ${log_file}
+    }
+    
     output {
-        # WDL glob() globs in an alphabetical order
-		# so R1 and R2 can be switched, which results in an
-		# unexpected behavior of a workflow
-		# so we prepend <PREFIX>_fastqs_'end'_ (R1 or R2)
-		# to the basename of original filename
-		# this prefix should be later stripped in a later task
-		Array[File] none_fastqs = glob("*none_fastqs_R?_*.fastq.gz")
-        Array[File] single_fastqs = glob("*single_fastqs_R?_*.fastq.gz")
-        Array[File] paired_fastqs = glob("*paired_fastqs_R?_*.fastq.gz")
-		File fastq_splitting_log = glob("*.splitting.log")[0]
-		File fastq_splitting_qc = glob("*.fastq_splitting.qc")[0]
+		# After linker filtering, the output FASTQ file for each
+		# category contains both R1 and R2 in the same file 
+		
+		# Core output FASTQ files
+		File none_fastq = ${run}.none.fastq.gz
+        File single_fastq = ${run}.singlelinker.single.fastq.gz
+        File paired_fastq = ${run}.singlelinker.paired.fastq.gz
+        
+        # Accessory output FASTQ files
+        File conflict_fastq = ${run}.conflict.fastq.gz
+        File tied_fastq = ${run}.tied.fastq.gz
+        
+        # Log and statistics files
+		File fastq_splitting_log = 1.${run}.filter_linker.log 
+		File fastq_splitting_stat = ${run}.stat
 	}
 
     runtime {
