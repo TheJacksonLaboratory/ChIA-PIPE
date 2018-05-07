@@ -10,11 +10,11 @@ workflow chia-pet {
 	# (A) none (no linker detected)
 	# (B) linker.single (linker found, but only one side was mappable)
 	# (C) linker.paired (linker found and both sides are mappable)
-	call fastq_splitting { input :
+	call filter_linker { input :
 		fastqs = fastqs
 	}
 
-	scatter(fastq in [fastq_splitting.none_fastq, fastq_splitting.single_fastq, fastq_splitting.paired_fastq]) {
+	scatter(fastq in [filter_linker.none_fastq, filter_linker.single_fastq, filter_linker.paired_fastq]) {
 		call mapping { input :
 			fastqs = paired_fastqs
 		}
@@ -54,10 +54,14 @@ workflow chia-pet {
 
 # workflow tasks 
 
-task fastq_splitting {
+task filter_linker {
 	# Inputs
-	Array[File] fastqs	# [end_id]
-	run					# string: the sequencing run ID
+	Array[File] fastqs	                # [end_id]
+	run					                # string: the sequencing run ID
+	linker_a="ACGCGATATCTTATCTGACT"     # Linker A sequence
+	linker_b=None                       # Linker B sequence (optional)
+	min_tag_len=18                      # Minimum length of "usable" genomic tag
+	n_thread=20                         # number of threads
 	
 	# Initialize log file
 	command {
@@ -74,14 +78,21 @@ task fastq_splitting {
 	# R1 and R2 reads
 	
 	command {
-		cpu/cpu stag -W -T 18 -t ${n_thread} -O ${run} \
-			${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
-			2>> ${log_file}
+	    if not linker_b:
+		    cpu stag -W -T ${min_tag_len} -t ${n_thread} -O ${run} \
+		        -A ${linker_a} \
+			    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+			    2>> ${log_file}
+		else:
+		    cpu stag -W -T ${min_tag_len} -t ${n_thread} -O ${run} \
+		        -A ${linker_a} -B ${linker_b}\
+			    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+			    2>> ${log_file}
 	}
 	
 	# Get linker statistics and write to file
 	command {
-		cpu/cpu stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
+		cpu stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
 			2>> ${log_file} 1> ${run}.stat
 	}
 	
@@ -120,6 +131,7 @@ task fastq_splitting {
 		docker: 'some repo docker for CPU'
 	}
 }
+
 
 task mapping {
 	# inputs
