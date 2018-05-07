@@ -46,4 +46,5 @@ RUN cd cpu-dir && unzip ChiaSigCPPv093.zip
 RUN cd cpu-dir/ChiaSigCPPv093 && make
 
 ## Compile CPU
-#RUN cd cpu-dir && make
+COPY /Users/capurd/proj/chia_pet/chia_pet_tool_2/cpu-dir/cpu-dir cpu-dir/cpu-dir
+RUN cd cpu-dir && make
