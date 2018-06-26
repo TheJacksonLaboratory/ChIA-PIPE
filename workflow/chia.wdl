@@ -58,10 +58,10 @@ task filter_linker {
 	# Inputs
 	Array[File] fastqs	                # [end_id]
 	String run					        # string: the sequencing run ID
-	String? linker_a = AATCG                   # Linker A sequence
-	String? linker_b = None                   # Linker B sequence (optional)
-	Int? min_tag_len = 18                  # Minimum length of "usable" genomic tag
-	Int? n_thread = 16                       # number of threads
+	String linker_a = AATCG                   # Linker A sequence
+	String linker_b = None                   # Linker B sequence (optional)
+	Int min_tag_len = 18                  # Minimum length of "usable" genomic tag
+	Int n_thread = 16                       # number of threads
 	
 	# Initialize log file
 	command {
