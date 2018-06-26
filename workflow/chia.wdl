@@ -66,7 +66,6 @@ task filter_linker {
 	# Initialize log file
 	command {
 		log_file = 1.${run}.filter_linker.log
-	}
 	
 	
 	    ## Filter linker
