@@ -57,11 +57,11 @@ workflow chia-pet {
 task filter_linker {
 	# Inputs
 	Array[File] fastqs	                # [end_id]
-	run					                # string: the sequencing run ID
-	linker_a="ACGCGATATCTTATCTGACT"     # Linker A sequence
-	linker_b=None                       # Linker B sequence (optional)
-	min_tag_len=18                      # Minimum length of "usable" genomic tag
-	n_thread=20                         # number of threads
+	String run					        # string: the sequencing run ID
+	String? linker_a                    # Linker A sequence
+	String? linker_b                    # Linker B sequence (optional)
+	Int? min_tag_len                    # Minimum length of "usable" genomic tag
+	Int? n_thread                       # number of threads
 	
 	# Initialize log file
 	command {
@@ -69,36 +69,43 @@ task filter_linker {
 	}
 	
 	
-	## Filter linker
-	# Reads in the read pairs from separate R1 and R2 files
-	# Partitions the read pairs into different categories:
-	# 1. no linker, 2. linker - one tag, 3. linker - two tags,
-	# (4. conflict), (5. tied)
-	# For each category, writes out a FASTQ file containing both
-	# R1 and R2 reads
-	
-	command {
+	    ## Filter linker
+	    # Reads in the read pairs from separate R1 and R2 files
+	    # Partitions the read pairs into different categories:
+	    # 1. no linker, 2. linker - one tag, 3. linker - two tags,
+	    # (4. conflict), (5. tied)
+	    # For each category, writes out a FASTQ file containing both
+	    # R1 and R2 reads
+	    
+	    if not linker_a:
+	        # Run linker filtering in single-linker mode
+	        # with the default linker sequence
+	    	cpu stag -W -T ${min_tag_len} -t ${n_thread} -O ${run} \
+			    ${sep=' ' fastqs} \
+			    2>> ${log_file}
+	    
 	    if not linker_b:
+	        # Run linker filtering in single-linker mode
+	        # with custom linker sequence
 		    cpu stag -W -T ${min_tag_len} -t ${n_thread} -O ${run} \
 		        -A ${linker_a} \
-			    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+			    ${sep=' ' fastqs} \
 			    2>> ${log_file}
 		else:
+		    # Run linker filtering in dual-linker mode
+		    # with custom linker sequences
 		    cpu stag -W -T ${min_tag_len} -t ${n_thread} -O ${run} \
 		        -A ${linker_a} -B ${linker_b}\
-			    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
+			    ${sep=' ' fastqs} \
 			    2>> ${log_file}
-	}
 	
-	# Get linker statistics and write to file
-	command {
+        # Get linker statistics and write to file
 		cpu stat -s -p -T 18 -t ${n_thread} ${run}.cpu \
 			2>> ${log_file} 1> ${run}.stat
-	}
 	
 	
-	# Compress the partitioned FASTQ files
-	command {
+	    # Compress the partitioned FASTQ files
+	
 		# Three standard categories
 		pigz -p ${n_thread} ${run}.singlelinker.paired.fastq 2>> ${log_file}
 		pigz -p ${n_thread} ${run}.none.fastq 2>> ${log_file}
