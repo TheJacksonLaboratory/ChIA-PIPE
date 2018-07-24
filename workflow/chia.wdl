@@ -58,10 +58,10 @@ task filter_linker {
 	# Inputs
 	Array[File] fastqs	                # [end_id]
 	String run					        # string: the sequencing run ID
-	String linker_a = AATCG                   # Linker A sequence
-	String linker_b = None                   # Linker B sequence (optional)
-	Int min_tag_len = 18                  # Minimum length of "usable" genomic tag
-	Int n_thread = 16                       # number of threads
+	String linker_a = AATCG             # Linker A sequence
+	String? linker_b                    # Linker B sequence (optional)
+	Int min_tag_len = 18                # Minimum length of "usable" genomic tag
+	Int n_thread = 16                   # number of threads
 	
 	# Initialize log file
 	command {
@@ -120,17 +120,17 @@ task filter_linker {
 		# category contains both R1 and R2 in the same file 
 		
 		# Core output FASTQ files
-		File none_fastq = ${run}.none.fastq.gz
-		File single_fastq = ${run}.singlelinker.single.fastq.gz
-		File paired_fastq = ${run}.singlelinker.paired.fastq.gz
+		File none_fastq = ${run}.none.fastq.gz                      # glob
+		File single_fastq = ${run}.singlelinker.single.fastq.gz     # glob
+		File paired_fastq = ${run}.singlelinker.paired.fastq.gz     # glob
 		
 		# Accessory output FASTQ files
-		File conflict_fastq = ${run}.conflict.fastq.gz
-		File tied_fastq = ${run}.tied.fastq.gz
+		File conflict_fastq = ${run}.conflict.fastq.gz              # glob
+		File tied_fastq = ${run}.tied.fastq.gz                      # glob
 		
 		# Log and statistics files
-		File fastq_splitting_log = 1.${run}.filter_linker.log 
-		File fastq_splitting_stat = ${run}.stat
+		File fastq_splitting_log = 1.${run}.filter_linker.log       # glob
+		File fastq_splitting_stat = ${run}.stat                     # glob
 	}
 
 	runtime {
