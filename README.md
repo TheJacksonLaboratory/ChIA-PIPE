@@ -1,7 +1,7 @@
 ## Config file for ChIA PIPE
 
 ### The directory containing the executables for ChIA PIPE
-bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2"
+    bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2"
 
 ### The name of the sequencing run
 run="LHH0066"
