@@ -7,7 +7,7 @@
 run="LHH0066"
 
 ### The type of sequencing run:
-####    "miseq" - around 30 million reads
+####    * "miseq" - around 30 million reads
 ####    "hiseq" - around 300 million reads
 ####    "pooled" - around 1 billion reads
 run_type="miseq"
