@@ -1,0 +1,33 @@
+Package: hicrep
+Title: Measuring the reproducibility of Hi-C data
+Version: 1.2.0
+Authors@R: person("Tao", "Yang", email = "xadmyangt@gmail.com", role =
+        c("aut", "cre"))
+Description: Hi-C is a powerful technology for studying genome-wide
+        chromatin interactions. However, current methods for assessing
+        Hi-C data reproducibility can produce misleading results
+        because they ignore spatial features in Hi-C data, such as
+        domain structure and distance-dependence. We present a novel
+        reproducibility measure that systematically takes these
+        features into consideration. This measure can assess pairwise
+        differences between Hi-C matrices under a wide range of
+        settings, and can be used to determine optimal sequencing
+        depth. Compared to existing approaches, it consistently shows
+        higher accuracy in distinguishing subtle differences in
+        reproducibility and depicting interrelationships of cell
+        lineages than existing approaches. This R package `hicrep`
+        implements our approach.
+biocViews: Sequencing, HiC, QualityControl
+Depends: R (>= 3.4)
+Imports: stats
+License: GPL (>= 2.0)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
+Suggests: knitr, rmarkdown, testthat
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2017-10-31 01:17:30 UTC; biocbuild
+Author: Tao Yang [aut, cre]
+Maintainer: Tao Yang <xadmyangt@gmail.com>
+Built: R 3.4.4; ; 2018-05-31 03:11:11 UTC; unix

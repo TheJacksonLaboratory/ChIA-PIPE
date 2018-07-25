@@ -1,0 +1,37 @@
+ApplyPileupsParam       Parameters for creating pileups from BAM files
+BamFile                 Maintain and use BAM files
+BamSampler              Deprecated functions
+BamViews                Views into a set of BAM files
+BcfFile                 Manipulate BCF files.
+FaFile                  Manipulate indexed fasta files.
+PileupFiles             Represent BAM files for pileup summaries.
+Rsamtools-package       'samtools' aligned sequence utilities interface
+RsamtoolsFile-class     A base class for managing file references in
+                        Rsamtools
+RsamtoolsFileList       A base class for managing lists of Rsamtools
+                        file references
+ScanBamParam            Parameters for scanning BAM files
+ScanBcfParam-class      Parameters for scanning BCF files
+TabixFile               Manipulate tabix indexed tab-delimited files.
+applyPileups            Apply a user-provided function to calculate
+                        pile-up statistics across multiple BAM files.
+bgzip                   File compression for tabix (bgzip) and fasta
+                        (razip) files.
+headerTabix             Retrieve sequence names defined in a tabix
+                        file.
+indexFa                 Operations on indexed 'fasta' files.
+indexTabix              Compress and index tabix-compatible files.
+pileup                  Use filters and output formats to calculate
+                        pile-up statistics for a BAM file.
+quickBamFlagSummary     Group the records of a BAM file based on their
+                        flag bits and count the number of records in
+                        each group
+readPileup              Import samtools 'pileup' files.
+scanBam                 Import, count, index, filter, sort, and merge
+                        'BAM' (binary alignment) files.
+scanBcfHeader           Operations on 'BCF' files.
+scanTabix               Operations on 'tabix' (indexed, tab-delimited)
+                        files.
+seqnamesTabix           Retrieve sequence names defined in a tabix
+                        file.
+testPairedEndBam        Quickly test if a BAM file has paired end reads

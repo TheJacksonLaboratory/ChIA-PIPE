@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=12:00:00
+#PBS -l mem=60GB
+#PBS -j oe
+cd ${PBS_O_WORKDIR}
+
+bin_dir=/projects/capurd/chia_pet/chia_pet_tool_2
+
+# Bigwig files
+f1=/projects/ruan-lab/capurd/processing/results/LHK0001N/*.bigwig
+f2=/projects/ruan-lab/capurd/processing/results/LHK0002N/*.bigwig
+f3=/projects/ruan-lab/capurd/processing/results/LHG0010H/*.bigwig
+f4=/projects/ruan-lab/capurd/processing/results/LHG0014H/*.bigwig
+f5=/projects/ruan-lab/capurd/processing/results/LHG000721E6H/*.bigwig
+f6=/projects/ruan-lab/capurd/processing/results/LHG000920E4H/*.bigwig
+
+# Compute multi-bigwig summary
+${bin_dir}/conda/bin/multiBigwigSummary bins \
+    --bwfiles $f1 $f2 $f3 $f5 $f6 \
+    --labels CTCF_K562 CTCF_K562 CTCF_GM12878 RNAPII_GM12878 RNAPII_GM12878 \
+    --numberOfProcessors 20 \
+    -o K562_GM12878_multi_bigwig.npz

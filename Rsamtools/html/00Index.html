@@ -1,0 +1,684 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Binary alignment (BAM), FASTA, variant call (BCF), and tabix
+file import</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Binary alignment (BAM), FASTA, variant call (BCF), and tabix
+file import
+<img class="toplogo" src="../../../doc/html/logo.jpg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;Rsamtools&rsquo; version 1.20.5</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#Y">Y</a>
+<a href="#misc">misc</a>
+</p>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">Rsamtools-package</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+</table>
+
+<h2><a name="A">-- A --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="applyPileups.html">applyPileups</a></td>
+<td>Apply a user-provided function to calculate pile-up statistics across multiple BAM files.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">applyPileups-method</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">ApplyPileupsParam</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">ApplyPileupsParam-class</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">asBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">asBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">asBcf</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">asBcf-method</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">asMates</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">asMates-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">asMates&lt;-</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">asMates&lt;--method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">asSam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">asSam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+</table>
+
+<h2><a name="B">-- B --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamDirname&lt;-</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamExperiment</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">BamFile</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">BamFile-class</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">BamFileList</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">BamFileList-class</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamFlag</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamFlag&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamFlagAND</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamFlagAsBitMatrix</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamFlagTest</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamIndicies</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamPaths</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamRanges</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamRanges&lt;-</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamReverseComplement</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamReverseComplement&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">BamSampler</a></td>
+<td>Deprecated functions</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">BamSampler-class</a></td>
+<td>Deprecated functions</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamSamples</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">bamSamples&lt;-</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamSimpleCigar</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamSimpleCigar&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamTag</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamTag&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamTagFilter</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamTagFilter&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">BamViews</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">BamViews-class</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">BamViews-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamWhat</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamWhat&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamWhich</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamWhich&lt;-</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">bamWhich&lt;--method</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">BcfFile</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">BcfFile-class</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">BcfFileList</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">BcfFileList-class</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfFixed</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfGeno</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfInfo</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">bcfMode</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfSamples</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfTrimEmpty</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">bcfWhich</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="zip.html">bgzip</a></td>
+<td>File compression for tabix (bgzip) and fasta (razip) files.</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">bzfile-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+</table>
+
+<h2><a name="C">-- C --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamFile-class.html">close.BamFile</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">close.BcfFile</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">close.FaFile</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">close.PileupFiles</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">close.RsamtoolsFileList</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">close.TabixFile</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">countBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">countBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">countBam-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">countBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">countFa</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">countFa-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">countFa-method</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">countTabix</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">cycle_bins</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+</table>
+
+<h2><a name="D">-- D --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamViews-class.html">dim-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">dimnames-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">dimnames&lt;--method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">distinguish_nucleotides</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">distinguish_strands</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+</table>
+
+<h2><a name="F">-- F --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="FaFile-class.html">FaFile</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">FaFile-class</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">FaFileList</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">FaFileList-class</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">fifo-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">filterBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">filterBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">filterBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">FLAG_BITNAMES</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+</table>
+
+<h2><a name="G">-- G --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="FaFile-class.html">getSeq-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">gzfile-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+</table>
+
+<h2><a name="H">-- H --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">hasUnmappedMate</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="headerTabix.html">headerTabix</a></td>
+<td>Retrieve sequence names defined in a tabix file.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">headerTabix-method</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="headerTabix.html">headerTabix-method</a></td>
+<td>Retrieve sequence names defined in a tabix file.</td></tr>
+</table>
+
+<h2><a name="I">-- I --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="pileup.html">ignore_query_Ns</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">include_deletions</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">include_insertions</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">index</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">indexBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">indexBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">indexBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">indexBcf</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">indexBcf-method</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">indexBcf-method</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">indexFa</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">indexFa-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">indexFa-method</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="indexTabix.html">indexTabix</a></td>
+<td>Compress and index tabix-compatible files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isDuplicate</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isFirstMateRead</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">isIncomplete-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isMateMinusStrand</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isMinusStrand</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isNotPassingQualityControls</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isNotPrimaryRead</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">isOpen-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">isOpen-method</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">isOpen-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">isOpen-method</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">isOpen-method</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">isOpen-method</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">isOpen-method</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isPaired</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isProperPair</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isSecondaryAlignment</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isSecondMateRead</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">isUnmappedQuery</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+</table>
+
+<h2><a name="M">-- M --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="pileup.html">max_depth</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">mergeBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">mergeBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">mergeBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">min_base_quality</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">min_mapq</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">min_minor_allele_depth</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">min_nucleotide_depth</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+</table>
+
+<h2><a name="N">-- N --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamViews-class.html">names-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">names-method</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">names&lt;--method</a></td>
+<td>Views into a set of BAM files</td></tr>
+</table>
+
+<h2><a name="O">-- O --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamFile-class.html">obeyQname</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">obeyQname-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">obeyQname&lt;-</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">obeyQname&lt;--method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">open.BamFile</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">open.BcfFile</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">open.FaFile</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">open.PileupFiles</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">open.RsamtoolsFileList</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">open.TabixFile</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+</table>
+
+<h2><a name="P">-- P --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">path</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">path-method</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">path-method</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">pileup</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">pileup-method</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">PileupFiles</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">PileupFiles-class</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">PileupFiles-method</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">PileupParam</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">PileupParam-class</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">pipe-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">plpFiles</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpFlag</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpFlag&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMaxDepth</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMaxDepth&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinBaseQuality</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinBaseQuality&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinDepth</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinDepth&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinMapQuality</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpMinMapQuality&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">plpParam</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpWhat</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpWhat&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpWhich</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpWhich&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldAll</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldAll&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldBy</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldBy&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldSize</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">plpYieldSize&lt;-</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+</table>
+
+<h2><a name="Q">-- Q --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnamePrefixEnd</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnamePrefixEnd-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnamePrefixEnd&lt;-</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnamePrefixEnd&lt;--method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnameSuffixStart</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnameSuffixStart-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnameSuffixStart&lt;-</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">qnameSuffixStart&lt;--method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="quickBamFlagSummary.html">quickBamFlagSummary</a></td>
+<td>Group the records of a BAM file based on their flag bits and count the number of records in each group</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">quickBamFlagSummary-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="quickBamFlagSummary.html">quickBamFlagSummary-method</a></td>
+<td>Group the records of a BAM file based on their flag bits and count the number of records in each group</td></tr>
+</table>
+
+<h2><a name="R">-- R --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="zip.html">razip</a></td>
+<td>File compression for tabix (bgzip) and fasta (razip) files.</td></tr>
+<tr><td style="width: 25%;"><a href="readPileup.html">readPileup</a></td>
+<td>Import samtools 'pileup' files.</td></tr>
+<tr><td style="width: 25%;"><a href="readPileup.html">readPileup-method</a></td>
+<td>Import samtools 'pileup' files.</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">Rsamtools</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">RsamtoolsFile-class</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">RsamtoolsFileList</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">RsamtoolsFileList-class</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+</table>
+
+<h2><a name="S">-- S --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="scanBam.html">scanBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">scanBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">scanBam-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">scanBam-method</a></td>
+<td>Deprecated functions</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">scanBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">scanBamFlag</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">scanBamHeader</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">scanBamHeader-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">scanBamHeader-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">ScanBamParam</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">ScanBamParam-class</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">ScanBamParam-method</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">scanBamWhat</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">scanBcf</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">scanBcf-method</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">scanBcf-method</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">scanBcfHeader</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="BcfFile-class.html">scanBcfHeader-method</a></td>
+<td>Manipulate BCF files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBcf.html">scanBcfHeader-method</a></td>
+<td>Operations on 'BCF' files.</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">ScanBcfParam</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">ScanBcfParam-class</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">ScanBcfParam-method</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">ScanBVcfParam-class</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">scanFa</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">scanFa-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">scanFa-method</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">scanFaIndex</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">scanFaIndex-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanFa.html">scanFaIndex-method</a></td>
+<td>Operations on indexed 'fasta' files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanTabix.html">scanTabix</a></td>
+<td>Operations on 'tabix' (indexed, tab-delimited) files.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">scanTabix-method</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="scanTabix.html">scanTabix-method</a></td>
+<td>Operations on 'tabix' (indexed, tab-delimited) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">seqinfo-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="FaFile-class.html">seqinfo-method</a></td>
+<td>Manipulate indexed fasta files.</td></tr>
+<tr><td style="width: 25%;"><a href="seqnamesTabix.html">seqnamesTabix</a></td>
+<td>Retrieve sequence names defined in a tabix file.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">seqnamesTabix-method</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="seqnamesTabix.html">seqnamesTabix-method</a></td>
+<td>Retrieve sequence names defined in a tabix file.</td></tr>
+<tr><td style="width: 25%;"><a href="ApplyPileupsParam-class.html">show-method</a></td>
+<td>Parameters for creating pileups from BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">show-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="BamViews-class.html">show-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="PileupFiles-class.html">show-method</a></td>
+<td>Represent BAM files for pileup summaries.</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">show-method</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBamParam-class.html">show-method</a></td>
+<td>Parameters for scanning BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="ScanBcfParam-class.html">show-method</a></td>
+<td>Parameters for scanning BCF files</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">show-method</a></td>
+<td>Deprecated functions</td></tr>
+<tr><td style="width: 25%;"><a href="pileup.html">show-method</a></td>
+<td>Use filters and output formats to calculate pile-up statistics for a BAM file.</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">sortBam</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+<tr><td style="width: 25%;"><a href="BamFile-class.html">sortBam-method</a></td>
+<td>Maintain and use BAM files</td></tr>
+<tr><td style="width: 25%;"><a href="scanBam.html">sortBam-method</a></td>
+<td>Import, count, index, filter, sort, and merge 'BAM' (binary alignment) files.</td></tr>
+</table>
+
+<h2><a name="T">-- T --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">TabixFile</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">TabixFile-class</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">TabixFileList</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="TabixFile-class.html">TabixFileList-class</a></td>
+<td>Manipulate tabix indexed tab-delimited files.</td></tr>
+<tr><td style="width: 25%;"><a href="testPairedEndBam.html">testPairedEndBam</a></td>
+<td>Quickly test if a BAM file has paired end reads</td></tr>
+<tr><td style="width: 25%;"><a href="testPairedEndBam.html">testPairedEndBam-method</a></td>
+<td>Quickly test if a BAM file has paired end reads</td></tr>
+</table>
+
+<h2><a name="U">-- U --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">unz-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+<tr><td style="width: 25%;"><a href="Rsamtools-package.html">url-class</a></td>
+<td>'samtools' aligned sequence utilities interface</td></tr>
+</table>
+
+<h2><a name="Y">-- Y --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">yieldSize</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">yieldSize-method</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">yieldSize-method</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">yieldSize&lt;-</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFile-class.html">yieldSize&lt;--method</a></td>
+<td>A base class for managing file references in Rsamtools</td></tr>
+<tr><td style="width: 25%;"><a href="RsamtoolsFileList-class.html">yieldSize&lt;--method</a></td>
+<td>A base class for managing lists of Rsamtools file references</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">yieldTabix</a></td>
+<td>Deprecated functions</td></tr>
+<tr><td style="width: 25%;"><a href="deprecated.html">yieldTabix-method</a></td>
+<td>Deprecated functions</td></tr>
+</table>
+
+<h2><a name="misc">-- misc --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="BamViews-class.html">[-method</a></td>
+<td>Views into a set of BAM files</td></tr>
+</table>
+</body></html>

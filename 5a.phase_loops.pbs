@@ -1,0 +1,311 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=20:00:00
+#PBS -l mem=120GB
+#PBS -l vmem=120GB
+#PBS -j oe
+
+
+# ChIA-PET Tool v2
+#         Step 5a: Phase the peaks and loops
+# 2017
+# The Jackson Laboratory for Genomic Medicine
+
+# The help message:
+function usage
+{
+    echo -e "usage: bash 5a.phase_loops.pbs -c CONF -o OUT_DIR
+    " 
+}
+
+# Default values
+run="LHG0018"
+fasta="/projects/capurd/chia_pet/genomes/hg38/hg38.fa"
+snp_file="/projects/encode/chiapet_pipeline/SNP_ref/NA12878.SNP.phased.2.bed"
+out_dir="/projects/capurd/testing_chia_pet/${run}"
+bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2"
+peak_caller="macs2"
+
+
+# Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --conf )           shift
+                                conf=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1
+                                ;;                                
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+# Put output files in subdirectory named after the run
+cd ${PBS_O_WORKDIR}
+source ${conf}
+cd ${out_dir}
+
+
+## Create name of the log file
+log_file=5a.${run}.phase_loops.log
+
+# Print arguments to ensure correct parsing
+echo "
+Arguments:
+    run=${run}
+    fasta=${fasta}
+    snp_file=${snp_file}
+    out_dir=${out_dir}
+    bin_dir=${bin_dir}
+" >> ${log_file}
+
+
+# Load the required modules
+module load R/3.2.1
+module load perl/5.24.0
+module load bedtools/2.26.0
+
+# Create file names
+bam_file=${run}.for.BROWSER.bam
+loop_file=${run}.e500.clusters.cis.chiasig
+pileup_file=${run}.total_snp_pileup.txt
+
+if [ ${peak_caller} == "spp" ] || [ ${peak_caller} == "SPP" ]
+then
+    peak_file=${run}.for.BROWSER.spp.broadPeak
+else
+    peak_file=${run}.all_peaks.narrowPeak
+fi
+
+
+# Separate the SNP file into one file for each chromosome
+# (named after the chromosome)
+echo -e "`date` Splitting SNP file by chromosome..\n" >> ${log_file}
+
+awk '{ print >> "temp_"$1 }' ${snp_file}
+
+
+# Count the SNP alleles for each chromosome
+echo -e "`date` Counting SNP alleles on each chromosome..\n" >> ${log_file}
+
+### Get chromosome names from the fasta file
+chroms=$(grep ">" ${fasta} | sed -e "s/>//g")
+echo -e "`date` Detected the following chroms in the FASTA file..\n" \
+    >> ${log_file}
+
+for chrom in ${chroms}
+do
+    echo -e "\t${chrom}" >> ${log_file}
+done
+
+
+### Pileup chromosomes
+echo -e "`date` Performing mpileup on chromosome:\n" \
+    >> ${log_file}
+
+job_ids=()
+
+for chrom in ${chroms}
+do
+	# Skip chrM
+	if [ ${chrom} == 'chrM' ] || [ ${chrom} == 'chrY' ]
+	then
+	    echo -e "\t (Skipping ${chrom})" >> ${log_file}
+	    continue
+	fi
+	
+	# Create a separate PBS job for each chromosome
+	# to count SNP alleles with samtools
+	echo -e "\t ${chrom}" >> ${log_file}
+	job_name="temp_job_${chrom}"
+	
+	# Change to output directory and load modules
+	pbs="cd ${out_dir};"
+	pbs+="module load samtools/0.1.19;"
+	
+	# Samtools command
+	# By default, samtools/0.1.19 has BAQ filtering ON
+	# It is important to retain this if changing to a different version
+	pbs+="samtools mpileup -f ${fasta} "
+	pbs+="-l temp_${chrom} ${bam_file} "
+	pbs+="> temp_counts.${chrom}.mileup"
+	
+	# Submit job
+	jid=$( echo -e ${pbs} 2>> ${log_file} | \
+	    qsub -l nodes=1:ppn=20,mem=60gb,walltime=8:00:00 -N ${job_name})
+	sleep 0.5
+	job_ids+=" ${jid}"
+done
+
+
+# Wait for all chromosome jobs to finish
+echo -e "`date` Waiting for job completion... \n" >> ${log_file}
+
+for jid in ${job_ids}
+do
+    echo -e "\t${jid}" >> ${log_file}
+    
+    while [ -n "$( qstat | grep ${jid} )" ]
+    do
+        sleep 1
+    done
+done
+
+# Report completion of counting SNP alleles
+echo -e "`date` Completed counting SNP alleles..\n" >> ${log_file}
+
+
+### Merge SNP allele counts from all chromosomes
+echo -e "`date` Merging SNP allele counts from all chroms..\n" >> ${log_file}
+
+cat *mileup | awk 'BEGIN{FS="\t";OFS="\t"}{chrom=$1;pos=$2;ref=$3;\
+num=$4+$7+$10;bases=$5""$8""$11;qual=$6""$9""$12;\
+print chrom,pos,ref,num,bases,qual}' | awk 'NF==6{print}' \
+    > ${pileup_file}
+
+echo -e "`date` Completed merging SNP allele counts..\n" >> ${log_file}
+
+
+# Remove temporary files
+echo -e "`date` Removing temp files..\n" >> ${log_file}
+
+#rm temp_*
+
+echo -e "`date` Completed removing temp files..\n" >> ${log_file}
+
+### Count phased SNPs
+# Do binomial test to identify significantly biased SNPs
+# Output file name: phased_snp_qvalue.txt
+echo -e "`date` Counting SNP allele bias and assessing significance.." \ 
+    >> ${log_file}
+
+# Allele-biased SNPs (R)
+Rscript ${bin_dir}/compute_phased_SNP.R \
+    ${pileup_file} ${snp_file} TRUE 0.1
+
+# Allele-biased SNPs (Python)
+#${bin_dir}/compute_phased_snp.py -p ${pileup_file} -s ${snp_file} -q 0.1
+
+echo -e "`date` Completed counting SNP allele bias..\n" >> ${log_file}
+
+
+
+
+### Get unique interactions and anchors
+# Unzip compressed loop file to copy
+
+echo -e "`date` Getting unique anchors and merging interactions..\n" >> \
+    ${log_file}
+
+
+gunzip -c ${loop_file}.gz > ${loop_file}
+
+# Get loops with count >= 4
+awk '$7>=4{print}' ${loop_file} > ${loop_file}_PET_4+
+
+# Remove uncompressed loop file
+rm ${loop_file}
+
+# Remove chrM
+awk '{if(/chrM/){$0=""}else{print $1,$2,$3,$4,$5,$6,$7}}' \
+    ${loop_file}_PET_4+  > raw_interactions
+
+# Separate loops into one node per line
+# Then sort
+awk '{print $1,$2,$3,$7,($2+$3)/2,"\n",$4,$5,$6,$7,($5+$6)/2}' \
+    raw_interactions | awk '{printf "%s\t%d\t%d\t%d\t%d\n",$1,$2,$3,$4,$5}' | \
+    sort -k1,1 -k2n,2  | uniq > raw_nodes
+
+# Find unique nodes and take the center
+awk 'NR==1{tag=$1;start=$2;end=$3;pet=$4;center=$5}NR>1{
+        if($1==tag){
+                               if($2<=end && $3>=end){
+                                         end=$3
+                                      if($4>=pet){
+                                         pet=$4
+                                         center=$5 }
+                                      else{
+                                         center=center
+                                           }
+                                                  }
+                               else if($3<end) {
+                                      if($4>=pet){
+                                         pet=$4
+                                         center=$5 }
+                                      else{
+                                          center=center
+                                           }
+                                               }
+                               else{
+                                   print tag,start,end,center;
+                                   start=$2;end=$3;tag=$1;pet=$4;center=$5
+                                }
+                }
+        else {
+                 print tag,start,end,center;
+                 tag=$1;start=$2;end=$3;pet=$4;center=$5
+                 count=0
+             }
+             }END{print tag,start,end,center}' raw_nodes | \
+                awk '{printf "%s\t%d\t%d\t%d\n",$1,$2,$3,$4}'> raw_nodes_center
+
+# Reformat the file of unique nodes
+awk '{printf "%s\t%d\t%d\n",$1,$2,$3}' raw_nodes_center > unique_nodes
+
+# Find interactions among unique nodes
+bedtools intersect -a raw_nodes -b raw_nodes_center -wa -wb | \
+    awk 'NR==FNR{a[$1,$2,$3]=$6"\t"$7"\t"$8}NR>FNR{print a[$1,$2,$3]"\t"a[$4,$5,$6]}' -\
+    raw_interactions > unique_nodes_interactions
+
+echo -e "`date` Completed unique anchors and merging interactions..\n" >> \
+    ${log_file}
+
+
+### Compute phased interactions
+# phased_snp_qvalue.txx is generated by last step
+# FIXME: unique_nodes_interaction could be output file from cpu
+# (non-overlapping)
+echo "`date` Identifying biased loops (from raw loops and biased SNPs)..
+" >> ${log_file}
+
+perl ${bin_dir}/compute_phased_loops.pl \
+    phased_snp_qvalue.txt ${peak_file} unique_nodes_interactions
+
+# Alternatively, ${loop_file} could be used instead of unique_nodes_interactions
+
+
+echo -e "`date` Completed identifying biased loops..\n" >> ${log_file}
+echo "`date` $0 done" >> ${log_file}
+
+
+if [ ${all_steps} == true ] && [ ${snp_file} != "none" ]
+then
+    n_thread=20
+    mem=120
+    
+    if [ ${run_type} == "miseq" ]
+    then
+        wall_time=10
+    elif [ ${run_type} == "hiseq"] || [ ${run_type} == "nextseq" ]
+    then
+        wall_time=10
+    else
+        wall_time=10
+    fi
+    
+    ### 5. Phase PETs
+    # Submit the job
+    cd ${PBS_O_WORKDIR}
+    
+    job_5b=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
+    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -j oe -o ${out_dir}/5b.${run}.phase_PETs.o \
+    ${bin_dir}/5b.phase_PETs.pbs )
+fi

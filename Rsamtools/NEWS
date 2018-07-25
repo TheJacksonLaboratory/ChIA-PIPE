@@ -1,0 +1,400 @@
+CHANGES IN VERSION 1.20.1
+------------------------
+
+BUG FIXES
+
+    o segfault on range iteration introduced 1.19.35
+
+CHANGES IN VERSION 1.19
+-----------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o FaFile accepts a distinct index file
+
+    o Support for cigars > 32767 characters
+
+    o Mate pairs use pos and mpos values calculated modulo target
+      length for pairing, facilitating some representations of mates
+      on circular chromosomes.
+
+    o scanBam no longer translates mapq '255' to 'NA'
+
+BUG FIXES
+
+    o segfault on file iteration, introduced in 1.19.35, fixed in
+      1.19.44
+
+    o scanBam correctly parses '=' and 'X'
+
+CHANGES IN VERSION 1.17.0
+-------------------------
+
+NEW FEATURES
+
+    o pileup visits entire file if no 'which' argument specified for
+      'ScanBamParam' parameter of pileup. Buffered functionality with
+      'yieldSize' available to manage memory consumption when working
+      with large BAM files
+
+    o pileup 'read_pos_breaks' parameter renamed to 'cycle_bins':
+      cycle_bins allows users to differentiate pileup counts based on
+      user-defined regions within a read.
+
+    o pileup uses PileupParam and ScanBamParam instances to calculate
+      pileup statistics for a BAM file; returns a data.frame with
+      columns summarizing information extracted from alignments
+      overlapping each genomic position
+
+    o scanBam,BamSampler-method returns requested and actual
+      yieldSize, and total reads
+
+    o seqinfo,BamFileList-method returns the merged seqinfo of each
+      BamFile; seqlevels and seqlengths behave similarly.
+
+    o scanBamHeader accepts a 'what' argument to control input of the
+      targets and / or text portion of the header, and is much faster
+      for BAM files with many rnames.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o rename PileupParam class and constructor -> ApplyPileupsParam
+
+    o seqinfo,BamFile-method orders levels as they occur in the file,
+      reverting a change introduced in Rsamtools version 1.15.28
+      (version 1.17.16).
+
+BUG FIXES
+
+    o scanBam(BamSampler(), param=param) with a 'which' argument no
+      longer mangles element names, and respects yield size
+
+    o applyPileups checks that seqlevels are identical across files
+
+    o scanFa documentation incorrectly indicated that end coordinates
+      beyond the range of the sequence would be truncated; they are an
+      error.
+
+    o applyPileups would fail on cigars with insertion followed by
+      reference skip, e.g., 2I1024N98M (bug report of Dan Gatti).
+
+CHANGES IN VERSION 1.15.0
+-------------------------
+
+NEW FEATURES
+
+    o asSam converts BAM files to SAM files
+
+    o razip, bgzip re-compress directly from .gz files
+
+    o yieldReduce through a BAM or other file, applying a MAP function
+      to each chunk and reducing the result to it's final representation
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o bgzip default extension changed to '.bgz'
+
+    o seqinfo,BamFile-method attempts to return seqnames in 'natural'
+      order, e.g., chr1, chr2, ...
+
+    o yieldSize now works on BAM files queried with ranges. Successive
+      ranges are input until the total number of records first equals
+      or exceeds yieldSize..
+
+    o scanFa supports DNA, RNA, and AAStringSet return objects
+
+BUG FIXES
+
+    o scanFa returns correct sequence at the very end of files
+
+    o razip compresses small files
+
+    o applyPileups no longer crashes in the absence of an index file
+
+CHANGES IN VERSION 1.14.0
+-------------------------
+
+NEW FEATURES
+
+    o seqinfo(FaFile) returns available information on sequences and
+      lengths on Fa (indexed fasta) files.
+
+    o filterBam accepts FilterRules call-backs for arbitrary
+      filtering.
+
+    o add isIncomplete,BamFile-method to test for end-of-file
+
+    o add count.mapped.reads to summarizeOverlaps,*,BamFileList-method;
+      set to TRUE to collect read and nucleotide counts via countBam.
+
+    o add summarizeOverlaps,*,character-method to count simple file
+      paths
+
+    o add sequenceLayer() and stackStringsFromBam()
+
+    o add 'with.which_label' arg to readGAlignmentsFromBam(),
+      readGappedReadsFromBam(), readGAlignmentPairsFromBam(), and
+      readGAlignmentsListFromBam()
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o rename:
+        readBamGappedAlignments() -> readGAlignmentsFromBam() 
+        readBamGappedReads() -> readGappedReadsFromBam()
+        readBamGappedAlignmentPairs() -> readGAlignmentPairsFromBam()
+        readBamGAlignmentsList() -> readGAlignmentsListFromBam()
+        makeGappedAlignmentPairs() -> makeGAlignmentPairs()
+
+    o speedup findMateAlignment()
+
+DEPRECATED AND DEFUNCT
+
+    o deprecate readBamGappedAlignments(), readBamGappedReads(),
+      readBamGappedAlignmentPairs(), readBamGAlignmentsList(), and
+      makeGappedAlignmentPairs()
+
+BUG FIXES
+
+    o scanVcfHeader tolerates records without ID fields, and with
+      fields named similar to ID.
+
+    o close razip files only once.
+
+    o report tabix input errors
+
+CHANGES IN VERSION 1.12.0
+-------------------------
+
+NEW FEATURES
+
+    o BamSampler draws a random sample from BAM file records, obeying
+    any restriction by ScanBamParam().
+
+    o Add argument 'obeyQname' to BamFile. Used with qname-sorted
+    Bam files only.
+
+    o Add readBamGAlignmentsList function for reading qname-sorted
+    Bam files into a GAlignmentsList object. 
+
+USER-VISIBLE CHANGES
+
+    o bamPath and bamIndicies applied to BamViews returns named
+      vectors.
+
+    o 'yieldSize' argument in BamFile represents the number of
+    unique qnames when 'obeyQname=TRUE'. 
+
+BUG FIXES
+
+    o completely free razip, bgzip files when done.
+
+    o sortBam, indexBam fail gracefully on non-BAM input.
+
+    o headerTabix on an open TabixFile no longer reads the first
+    record
+
+    o scanBcfHeader provides informative error message when header
+    line ('#CHROM POS ...') is missing
+
+CHANGES IN VERSION 1.10.0
+-------------------------
+
+NEW FEATURES
+
+    o BamFile and TabixFile accept argument yieldSize; repeated calls
+      to scanBam and scanTabix return successive yieldSize chunks of
+      the file. readBamGappedAlignments, VariantAnnotation::readVcf
+      automatically gain support for yield'ing through files.
+
+    o Add getDumpedAlignments(), countDumpedAlignments(), and
+      flushDumpedAlignments() low-level utilities for manipulating
+      alignments dumped by findMateAlignment().
+
+    o Add quickBamCounts() utility for classifying the records in a BAM file
+      according to a set of predefined groups (based on the flag bits) and
+      for counting the nb of records in each group.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o scanBamFlag isValidVendorRead deprecated in favor of
+      isNotPassingQualityControls
+
+    o Rename makeGappedAlignmentPairs() arg 'keep.colnames' -> 'use.mcols'.
+
+BUG FIXES
+
+    o close razip, bgzip files when done
+
+    o bamReverseComplement<- failed to return the updated object
+
+    o scanBcfHeader works on remote files
+
+    o allow asBam to work without warnings on header-only SAM files
+
+    o some bug fixes and and small performance improvements to
+      findMateAlignment()
+
+    o fix bug in readBamGappedAlignmentPairs() where fields and tags
+      specified by the user were not propagated to the returned
+      GappedAlignmentPairs object
+
+CHANGES IN VERSION 1.8.0
+------------------------
+
+NEW FEATURES
+
+    o Add readBamGappedAlignmentPairs() (plus related utilities
+      findMateAlignment() and makeGappedAlignmentPairs()) to read a BAM
+      file into a GappedAlignmentPairs object.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o update samtools to github commit
+      dc27682f70713a70d4f31bca652cf78e00757da2
+
+    o Add 'bitnames' arg to bamFlagAsBitMatrix() utility.
+
+    o By default readBamGappedAlignments() and readBamGappedReads() don't
+      drop PCR or optical duplicates anymore.
+
+BUG FIXES
+
+    o readBamGappedAlignments handles empty 'tag' fields
+
+    o scanTabix would omit variants overlapping range ends
+
+    o scanFa would segfault on empty files or empty ids
+
+CHANGES IN VERSION 1.6.0
+------------------------
+
+NEW FEATURES
+
+    o TabixFile, indexTabix, scanTabix, yieldTabix index (sorted,
+    compressed) and parse tabix-indexed files
+
+    o readBamGappedReads(), bamFlagAsBitMatrix(), bamFlagAND()
+
+    o Add use.names and param args to readBamGappedAlignments(); dropped
+    which and ... args.
+
+    o PileupFiles, PileupParam, applyPileup for visiting several BAM
+    files and calculating pile-ups on each.
+
+    o Provide a zlib for Windows, as R does not currently do this
+
+    o BamFileList, BcfFileList, TabixFileList, FaFileList clases
+    extend IRanges::SimpleList, for managings lists of file references 
+
+    o razfFa creates random access compressed fasta files.
+
+    o count and scanBam support input of larger numbers of records; 
+    countBam nucleotide count is now numeric() and subject to rounding
+    error when large.
+
+    o Update to samtools 0.1.17
+
+    o asBcf and indexBcf coerces VCF files to BCF, and indexes BCF
+
+    o Update to samtools 0.1.18
+
+    o scanVcf parses VCF files; use scanVcf,connection,missing-method
+    to stream, scanVcf,TabixFile,*-method to select subsets. Use
+    unpackVcf to expand INFO and GENO fields.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o ScanBamParam argument 'what' defaults to character(0) (nothing)
+    rather than scanBamWhat() (everything)
+
+    o bamFlag returns a user-friendly description of flags by default
+
+BUG FIXES
+
+    o scanBam (and readBamGappedAlignments) called with an invalid or
+    character(0) index no longer segfaults.
+
+    o scanBcfHeader parses values with embedded commas or =
+
+    o scanFa fails, rather than returns incorrect sequences, when file
+    is compressed and file positions are not accessed sequentially
+
+    o scanBcf parses VCF files with no genotype information.
+
+    o scanBam called with the first range having no reads returned
+    invalid results for subsequent ranges; introduced in svn r57138
+
+    o scanBamFlag isPrimaryRead changed to isNotPrimaryRead,
+    correctly reflecting the meaning of the flag.
+
+CHANGES IN VERSION 1.4.0
+------------------------
+
+NEW FEATURES
+
+    o BamFile class allows bam files to be open across calls to
+    scanBam and friends. This can be helpful when wanting to avoid
+    repeated loading of the index, for instance.
+
+    o BcfFile, scanBcf, scanBcfHeader to parse bcftools' .vcf and .bcf
+    files. Note that this implements bcftools notions of vcf and bcf,
+    and are not fully compliant with vcf-4.0.
+
+    o asBam converts SAM files to (indexed) BAM files
+
+    o FaFile, indexFa, scanIndexFa, scanFa index and parse (indexed)
+    fasta files.
+
+BUG FIXES
+
+    o scanBamFlag isValidVendorRead had reversed TRUE/FALSE logic
+
+    o Attempts to read too many records caught more gracefully.
+
+    o samtools output to fprintf() or calls to exit() are handled more
+    gracefully
+
+CHANGES IN VERSION 1.2.0
+------------------------
+
+NEW FEATURES
+
+    o Update to samtools 0.1.8
+
+    o Update to samtools svn rev 750 (Mon, 27 Sep 2010)
+
+    o sortBam sorts a BAM file
+
+BUG FIXES
+
+    o Attempts to parse non-existent local files now generate an error
+
+    o Reads whose last nucleotide overlaps the first of a range are
+    now scanned / counted.
+
+    o scanning / counting reads late in large Windows files is fast
+
+    o scanBam tag fields of type 'A' parsed correctly
+
+CHANGES IN VERSION 1.0.0
+-----------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o scanBam returns minus-strand reads in the manner presented in
+    the BAM file, i.e., as though on the positive strand. This occurs
+    in revision 0.1.34
+
+    o readBamGappedAlignments replaces readBAMasGappedAlignments
+
+NEW FEATURES
+
+    o ScanBamParam() accepts 'tag' argument for parsing optional fields
+
+    o BamViews can be used with scanBam, countBam,
+    readBamGappedAlignments
+
+BUG FIXES
+
+    o No changes classified as 'bug fixes' (package under active
+    development)

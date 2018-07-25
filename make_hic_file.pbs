@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=40:00:00
+#PBS -l mem=60GB
+#PBS -l vmem=60GB
+#PBS -j oe
+
+
+## The help message:
+function usage
+{
+    echo -e "usage: bash make_hic_file.pbs -c CONF -o OUT_DIR
+    " 
+}
+
+## Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --conf )           shift
+                                conf=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1   
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+## Put output files in subdirectory named after the run
+cd ${PBS_O_WORKDIR}
+source ${conf}
+cd ${out_dir}
+
+module load java/1.7.0
+
+
+# BAM to pairs
+paired_tag_bam="${run}.singlelinker.paired.UU.nr.sorted.bam"
+${bin_dir}/pairix_src/util/bam2pairs/bam2pairs -c ${chrom_sizes} \
+    ${paired_tag_bam} ${run}
+
+# Pairs to .hic
+juicer="${bin_dir}/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
+hic_file="ChIA-PET_${genome}_${cell_type}_${ip_factor}_${run}_${run_type}_pairs.hic"
+
+java -Xmx2g -jar ${juicer} pre -r \
+    2500000,1000000,500000,250000,100000,50000,25000,10000,5000,1000 \
+    ${run}.bsorted.pairs.gz ${hic_file} ${chrom_sizes}
+
+# Copy .hic file to URL directory
+# for automatic viewing of 2D contact map
+url_dir="/projects/encode/to_ctencode01/dev"
+
+if [ -d ${url_dir} ]; then
+    cp ${hic_file} ${url_dir}
+fi

@@ -1,0 +1,48 @@
+add.broad.peak.regions
+                        Calculate chromosome-wide profiles of smoothed
+                        tag density
+find.binding.positions
+                        Determine significant point protein binding
+                        positions (peaks)
+get.binding.characteristics
+                        Calculate characteristics of observed
+                        DNA-binding signal from cross-correlation
+                        profiles
+get.broad.enrichment.clusters
+                        Determine broad clusters of enrichment
+get.conservative.fold.enrichment.profile
+                        Estimate minimal fold enrichment/depletion
+                        along the chromosomes
+get.mser                Calculate minimal saturated enrichment fold
+                        ratio
+get.mser.interpolation
+                        Interpolate MSER dependency on the tag count
+get.smoothed.enrichment.mle
+                        Calculate chromosome-wide profiles of smoothed
+                        enrichment estimate
+get.smoothed.tag.density
+                        Calculate chromosome-wide profiles of smoothed
+                        tag density
+output.binding.results
+                        Write out determined binding peaks into a text
+                        file table
+read.bam.tags           Read BAM alignment file
+read.bin.maqmap.tags    Read MAQ binary alignment map file
+read.bowtie.tags        Read bowtie text alignment output file
+read.eland.tags         Read eland output file
+read.maqmap.tags        Read MAQ text alignment output file
+read.meland.tags        Read modified BED tag alignment file that
+                        contains variable match length information
+remove.local.tag.anomalies
+                        Restrict or remove positions with too many tags
+                        relative to local background.
+select.informative.tags
+                        Choose informative tags
+spp-package             ChIP-seq (Solexa) Processing Pipeline
+write.broadpeak.info    Write out determined broad enrichment regions
+                        using broadPeak format
+write.narrowpeak.binding
+                        Write out determined binding peaks using
+                        narrowPeak format
+writewig                A function to save a list of chromosome-wise
+                        x/y data frames into a WIG file format.

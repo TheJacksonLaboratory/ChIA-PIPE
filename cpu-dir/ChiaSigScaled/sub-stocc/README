@@ -1,0 +1,2 @@
+curl -O http://www.agner.org/random/randomc.zip
+curl -O http://www.agner.org/random/stocc.zip

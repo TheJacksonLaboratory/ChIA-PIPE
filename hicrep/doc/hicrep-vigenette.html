@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Tao Yang xadmyangt@gmail.com" />
+
+
+<title>Evaluate reproducibility of Hi-C data with hicrep</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Evaluate reproducibility of Hi-C data with <code>hicrep</code></h1>
+<h4 class="author"><em>Tao Yang <a href="mailto:xadmyangt@gmail.com">xadmyangt@gmail.com</a></em></h4>
+<h4 class="date"><em>3/1/2017</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Hi-C data analysis and interpretation are still in their early stages. In particular, there has been a lack of sound statistical metric to evaluate the quality of Hi-C data. When biological replicates are not available, investigators often rely on eithervisual inspection of Hi-C interaction heatmap or examining the ratio of long-range interaction read pairs over the total sequenced reads, neither of which are supported by robust statistics. When two or more biological replicates are available, it is a common practice to compute either Pearson or Spearman correlation coefficients between the two Hi-C data matrices and use them as a metric for quality control. However, these kind of over-simplified approaches are problematic and may lead to wrong conclusions, because they do not take into consideration of the unique characteristics of Hi-C data, such as distance-dependence and domain structures. As a result, two un-related biological samples can have a strong Pearson correlation coefficient, while two visually similar replicates can have poor Spearman correlation coefficient. It is also not uncommon to observe higher Pearson and Spearman correlations between unrelated samples than those between real biological replicates.</p>
+<p>we develop a novel framework, <code>hicrep</code>, for assessing the reproducibility of Hi-C data. It first minimizes the effect of noise and biases by smoothing Hi-C matrix, and then addresses the distance-dependence effect by stratifying Hi-C data according to their genomic distance. We further adopt a stratum-adjusted correlation coefficient (SCC) as the measurement of Hi-C data reproducibility. The value of SCC ranges from -1 to 1, and it can be used to compare the degrees of differences in reproducibility. Our framework can also infer confidence intervals for SCC, and further estimate the statistical significance of the difference in reproducibility measurement for different data sets.</p>
+<p>In this Vignette, we explain the method rationale, and provide guidance to use the functions of <code>hicrep</code> to assess the reproducibility for Hi-C intrachromosome replicates.</p>
+</div>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
+<p>Cite the following paper:</p>
+<p>HiCRep: assessing the reproducibility of Hi-C data using a stratum-adjusted correlation coefficient. Tao Yang, Feipeng Zhang, Galip Gurkan Yardimci, Ross C Hardison, William Stafford Noble, Feng Yue, Qunhua Li. bioRxiv 101386; doi: <a href="https://doi.org/10.1101/101386" class="uri">https://doi.org/10.1101/101386</a></p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>Download the source package <code>hicrep_0.99.5.tar.gz</code> from Github. Or install it from Bioconductor.</p>
+</div>
+<div id="rationale-of-method" class="section level2">
+<h2>Rationale of method</h2>
+<p>This is a 2-step method (Figure1). In Hi-C data it is often difficult to achieve sufficient coverage. When samples are not sufficiently sequenced, the local variation introduced by under-sampling can make it difficult to capture large domain structures. To reduce local variation, we first smooth the contact map before assessing reproducibility. Although a smoothing filter will reduce the individual spatial resolution, it can improve the contiguity of the regions with elevated interaction, consequently enhancing the domain structures. We use a 2D moving window average filter to smooth the Hi-C contact map. This choice is made for the simplicity and fast computation of mean filter, and the rectangular shape of Hi-C compartments.</p>
+<p>In the second step, we stratify the Hi-C reads by the distance of contacting loci, calculate the Pearson correlations within each stratum, and then summarize the stratum-specific correlation coefficients into an aggregated statistic. We name it as Stratum-adjusted Correlation Coefficient (SCC). For the methodology details, please refer to our manuscript.</p>
+<p>[Figure1. <code>hicrep</code> pipeline schematic representation] (<a href="https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/hicrep-pipeline.JPG" class="uri">https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/hicrep-pipeline.JPG</a>)</p>
+</div>
+<div id="the-format-of-input-and-pre-processing" class="section level2">
+<h2>The format of input and Pre-processing</h2>
+<p>The input are simply two Hi-C matrices to be compared. The Hi-C matrices should have the dimension <span class="math inline">\(N\times(3+N)\)</span>. The three additional initial columns are the chromosome name and mid-point coordinates of the two contact bins. Here, we should a example data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(HiCR1)</code></pre></div>
+<pre><code>## [1] 52 55</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">HiCR1[<span class="dv">1</span>:<span class="dv">10</span>,<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
+<pre><code>##       V1      V2       V3 V4 V5 V6 V7 V8 V9 V10
+## 1  chr22       0  1000000  0  0  0  0  0  0   0
+## 2  chr22 1000000  2000000  0  0  0  0  0  0   0
+## 3  chr22 2000000  3000000  0  0  0  0  0  0   0
+## 4  chr22 3000000  4000000  0  0  0  0  0  0   0
+## 5  chr22 4000000  5000000  0  0  0  0  0  0   0
+## 6  chr22 5000000  6000000  0  0  0  0  0  0   0
+## 7  chr22 6000000  7000000  0  0  0  0  0  0   0
+## 8  chr22 7000000  8000000  0  0  0  0  0  0   0
+## 9  chr22 8000000  9000000  0  0  0  0  0  0   0
+## 10 chr22 9000000 10000000  0  0  0  0  0  0   0</code></pre>
+<p>A single function <code>prep</code> will tranform the HiC matrix, smooth the data with given neighborhood size parameter <span class="math inline">\(h\)</span>, and filter the bins that have zero counts in both replicates. The arguments includes the two matrices, the resolution of matrices, smoothing parameter, and the maximum distance considered. The resolution is simply the bin size. Smoothing parameter decides the neighborhood size of smoothing. Below (Figure 2) is a demonstration of smoothing neighborhood for a point <span class="math inline">\(C_{ij}\)</span>:</p>
+<p>[Figure2. A smoothing neighborhood with <span class="math inline">\(h = 2\)</span>] (<a href="https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/Smoothing_neighborhood.JPG" class="uri">https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/Smoothing_neighborhood.JPG</a>)</p>
+<p>The maximum distance is that contacts beyond this distance will be under investigation. Here we are showing an example that has resolution 40kb, smoothing parameter <span class="math inline">\(h = 1\)</span>, and contacts with distance over 5M will not be considered:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Pre_HiC &lt;-<span class="st"> </span><span class="kw">prep</span>(HiCR1, HiCR2, <span class="dv">1000000</span>, <span class="dv">1</span>, <span class="dv">5000000</span>)
+<span class="kw">head</span>(Pre_HiC)</code></pre></div>
+<pre><code>##           V1       V2        V3        V4
+## 796 15500000 15500000 314.66667 515.11111
+## 797 15500000 16500000 539.88889 871.11111
+## 798 15500000 17500000 579.66667 927.11111
+## 799 15500000 18500000 283.00000 439.44444
+## 800 15500000 19500000  65.33333  95.55556
+## 801 15500000 20500000  32.88889  53.88889</code></pre>
+<p>The first two columns of the output are the mid-point coordinates of two contact bins, and the last two are the smoothed (or not if <span class="math inline">\(h = 0\)</span>) values of the two replicates.</p>
+</div>
+<div id="select-the-optimal-smoothing-parameter" class="section level2">
+<h2>Select the optimal smoothing parameter</h2>
+<p>A natrual question is how to select the smoothing parameter <span class="math inline">\(h\)</span>.To select <span class="math inline">\(h\)</span> objectively, we develop a heuristic procedure to search for the optimal smoothing parameter. Our procedure is designed based on the observation that the correlation between contact maps of replicate samples first increases with the level of smoothness and plateaus when sufficient smoothness is reached. To proceed, we use a pair of reasonably deeply sequenced interaction map as the training data. We randomly partition the data into ten fractions 10% of the data, then compute SCC for the sampled dataeach fraction at a series of smoothing parameters in the ascending order, then choose the smallest h at which the increment of the average reproducibility score is less than 0.01. This procedure is repeated ten times, and the mode among the ten h’s is picked.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">h_hat &lt;-<span class="st"> </span><span class="kw">htrain</span>(HiCR1, HiCR2, <span class="dv">1000000</span>, <span class="dv">5000000</span>, <span class="dv">0</span>:<span class="dv">2</span>)</code></pre></div>
+<pre><code>## smoothing:0</code></pre>
+<pre><code>## smoothing:1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">h_hat</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>[Figure3. Select the optimal smoothing parameter <span class="math inline">\(h\)</span>] (<a href="https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/Smoothing_parameter.JPG" class="uri">https://raw.githubusercontent.com/MonkeyLB/hicrep/master/vignettes/Smoothing_parameter.JPG</a>)</p>
+<p>The above graph shows the change of SCC as the <span class="math inline">\(h\)</span> increases from 0 to 10. The parameter <span class="math inline">\(h=5\)</span> is selected as the optimal smoothing neighborhood size.</p>
+<p>The smoothing parameter selection could be confounded by the sequencing depth. Insufficient sequencing depth data might lead to inflated smoothing neighborhood size. We suggest to use sufficient sequenced Hi-C data to train the smoothing parameter given the resolution (i.e., &gt; 300 million total nubmer of reads for whole chromosome). To compare SCC between pairs of replicates that has the same resolution, one shall use the same smoothing parameter.</p>
+</div>
+<div id="equalize-the-total-number-of-reads" class="section level2">
+<h2>Equalize the total number of reads</h2>
+<p>In previous section, we mention that sequencing depth could be a confounding effect. If the total numbers of reads are very different between the two replicates, it’s suggested that one should down-sample the higher sequencing depth to make it equal the lower one. The best way to do it is to use the bam files to do the sub-sampling. In case you only have the matrix file available, we made a function to do down-sampling from matrix files.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#check total number of reads before adjustment</span>
+<span class="kw">sum</span>(HiCR1[,-<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">3</span>)])</code></pre></div>
+<pre><code>## [1] 2065436</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">DS_HiCR1 &lt;-<span class="st"> </span><span class="kw">depth.adj</span>(HiCR1, <span class="dv">200000</span>, <span class="dv">1000000</span>, <span class="dt">out =</span> <span class="dv">0</span>) 
+
+<span class="co">#check total number of reads after adjustment</span>
+<span class="kw">sum</span>(DS_HiCR1[,-<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">3</span>)])</code></pre></div>
+<pre><code>## [1] 2e+05</code></pre>
+<p>When out = 0, the function will return matrix in the original format. When it equals 1, the vectorized format will be outputed.</p>
+</div>
+<div id="calculate-stratum-adjusted-correlation-coefficient-scc" class="section level2">
+<h2>Calculate Stratum-adjusted Correlation Coefficient (SCC)</h2>
+<p>After the raw matrices are pre-processed, we are ready to calculate the SCC and its variance. The input file is just the output dataset (i.e., vectorized, smoothed, zero-in-both filtered) from the function <code>prep</code>. We also need to specify the resolution of the matrix, and the maximum contacting distance considered.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SCC.out =<span class="st"> </span><span class="kw">get.scc</span>(Pre_HiC, <span class="dv">1000000</span>, <span class="dv">5000000</span>)
+
+<span class="co">#SCC score</span>
+SCC.out[[<span class="dv">3</span>]]</code></pre></div>
+<pre><code>##           [,1]
+## [1,] 0.9822897</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Standard deviation of SCC</span>
+SCC.out[[<span class="dv">4</span>]]</code></pre></div>
+<pre><code>## [1] 0.004437169</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 3.4.2 (2017-09-28)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 16.04.3 LTS
+## 
+## Matrix products: default
+## BLAS: /home/biocbuild/bbs-3.6-bioc/R/lib/libRblas.so
+## LAPACK: /home/biocbuild/bbs-3.6-bioc/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=C              
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] hicrep_1.2.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] compiler_3.4.2  backports_1.1.1 magrittr_1.5    rprojroot_1.2  
+##  [5] htmltools_0.3.6 tools_3.4.2     yaml_2.1.14     Rcpp_0.12.13   
+##  [9] stringi_1.1.5   rmarkdown_1.6   knitr_1.17      stringr_1.2.0  
+## [13] digest_0.6.12   evaluate_0.10.1</code></pre>
+<p>The output is a list of results including stratum specific Pearson correlations, weight coefficient, SCC and the asymptotic standard deviation of SCC. The last two numbers are the ones we needed in most of the situations.</p>
+</div>
+<div id="computation-efficiency" class="section level2">
+<h2>Computation efficiency</h2>
+<p>The computation speed is determined by the size of the chromosome. For the chromosome 22 data, <code>htrain</code> needs approximately 15 minutes, and the <code>get.scc</code> takes about 1~2 minutes. For chromosome 1, <code>get.scc</code> takes about 90 minutes. the The estimation is based on Intel i7-3250M core.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

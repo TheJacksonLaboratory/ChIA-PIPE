@@ -1,0 +1,11 @@
+hicrep-package	hicrep-package
+depth.adj	depth.adj
+get.scc	get.scc
+HiCR1	HiCR1
+HiCR2	HiCR2
+hicrep	hicrep-package
+htrain	htrain
+MatToVec	MatToVec
+prep	prep
+smoothMat	smoothMat
+vstran	vstran

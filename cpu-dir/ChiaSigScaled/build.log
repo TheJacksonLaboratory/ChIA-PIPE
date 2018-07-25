@@ -1,0 +1,3 @@
+g++ -O3 -mavx -fvectorize -ftree-vectorizer-verbose=3  -I tclap-1.2.1/include -lpthread CCCsig/kthread.cpp CCCsig/CCCDataReader.cpp CCCsig/CCCMatrix.cpp CCCsig/Segment.cpp CCCsig/CCCStatistics.cpp CCCsig/ChiaSig.cpp spline/spline.cpp stocc/fnchyppr.cpp stocc/userintf.cpp  -o ChiaSig
+clang: error: unknown argument: '-ftree-vectorizer-verbose=3'
+make: *** [ChiaSig] Error 1

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=12:00:00
+#PBS -l mem=60GB
+#PBS -l vmem=60GB
+#PBS -j oe
+
+# Purpose:
+# Convert the raw VCF data file of genotypes from the 1000 Genomes Project
+# to the phased SNP file that is need as input to the haplotype section
+# of the ChIA-PET pipeline.
+
+# Note:
+# Can only be applied to 1000 Genomes Project Trios.
+
+
+
+## The help message:
+function usage
+{
+    echo -e "usage: qsub -F \"--vcf_dir VCF_DIR --child_id CHILD_ID"\
+    "--paternal_id PATERNAL_ID --maternal_id MATERNAL_ID"\
+    "--out_dir OUT_DIR\" convert_vcf_to_snp_file.pbs 
+    " 
+}
+
+## Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -v | --vcf_dir )        shift
+                                vcf_dir=$1
+                                ;;
+        -c | --child_id )       shift
+                                child_id=$1
+                                ;;
+        -p | --paternal_id )    shift
+                                paternal_id=$1
+                                ;;
+        -c | --maternal_id )    shift
+                                maternal_id=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1   
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+
+cd ${PBS_O_WORKDIR}
+
+./projects/capurd/chia_pet/chia_pet_tool_2/convert_vcf_to_phased_snp.py \
+    -v ${vcf_dir} -c ${child_id} -p ${paternal_id} \
+    -m ${maternal_id} -o ${out_dir}

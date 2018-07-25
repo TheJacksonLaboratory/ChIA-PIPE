@@ -17,21 +17,21 @@
 ## The help message:
 function usage
 {
-    echo -e "usage: qsub -F \"--conf CONF --out_dir OUT_DIR --tag_name TAG_NAME\"
-    2.map.pbs
+    echo -e "usage: bash 2.map.pbs -c CONF -o OUT_DIR -t TAG_NAME
     " 
 }
 
 ## Default values for the arguments
-run="LHG0018"
-tag_name="none"
-genome="hg19"
-ctrl_genome="none"
-fasta="/data/mzheng/bridge_chiapet/genome/hg19/hg19.fa"
-juicer="/projects/tjongh/chiapet_script/encode_singleLinker/\
-juicer_tools.1.6.2_linux_jcuda.0.8.jar"
-out_dir="/projects/capurd/testing_chia_pet/${run}"
-all_steps=true
+#main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
+#run="LHG0018"
+#tag_name="none"
+#genome="hg19"
+#ctrl_genome="none"
+#fasta="/data/mzheng/bridge_chiapet/genome/hg19/hg19.fa"
+#juicer="/projects/tjongh/chiapet_script/encode_singleLinker/\
+#juicer_tools.1.6.2_linux_jcuda.0.8.jar"
+#out_dir="/projects/capurd/testing_chia_pet/${run}"
+#all_steps=true
 
 
 ## Parse arguments from the command line
@@ -55,6 +55,10 @@ while [ "$1" != "" ]; do
     shift
 done
 
+# Setting clustering parameters
+self_bp=8000
+exten_bp=500
+
 ## Put output files in subdirectory named after the run
 cd ${PBS_O_WORKDIR}
 source ${conf}
@@ -70,10 +74,6 @@ else
     suffix="UU"
 fi
 
-# Setting clustering parameters
-self_bp=8000
-exten_bp=500
-
 ## Load required modules
 module load pigz
 module load java/1.7.0
@@ -85,6 +85,7 @@ log_file=2.${run}.map_${tag_name}.log
 ## Print arguments to ensure correct parsing
 echo "
 Arguments:
+    main_prog=${main_prog}
     run=${run}
     tag_name=${tag_name}
     genome=${genome}
@@ -108,7 +109,7 @@ echo "
 # Mapping
 n_thread=20
 
-${bin_dir}/cpu/cpu memaln -T ${map_qual} -t ${n_thread} ${fasta} \
+${main_prog} memaln -T ${map_qual} -t ${n_thread} ${fasta} \
     ${run}.${tag_name}.fastq.gz 1> ${run}.${tag_name}.sam 2>> ${log_file}
 
 # Compress files
@@ -122,7 +123,7 @@ echo -e "`date` --- Mapping completed ---\n" >> ${log_file}
 echo -e "`date` --- Pairing paired tags ---\n" >> ${log_file}
 
 # Pairing
-${bin_dir}/cpu/cpu pair -S -q ${map_qual} -t ${n_thread} -s ${self_bp} \
+${main_prog} pair -S -q ${map_qual} -t ${n_thread} -s ${self_bp} \
     ${run}.${tag_name}.sam.gz \
     1>${run}.${tag_name}.stat.xls 2>> ${log_file}
 
@@ -170,11 +171,115 @@ ${main_prog} span -t ${n_thread} -s ${self_bp} \
 # Report non-redundant span computation completion
 echo -e "`date` --- ENDED ${run} cpu dedup span ---\n" >> ${log_file}
 
+
+## Cluster tags and make files for visualization with Juicebox and HiGlass
+if [ ${tag_name} == "singlelinker.paired" ]
+then
+    # Cluster tags using 500bp extension 
+    echo -e "`date` --- STARTED ${run} clustering with ${extbp} bp"\
+        "extension from each side --- \n" >> ${log_file}
+    
+    ${main_prog} cluster -m -s ${self_bp} -B 1000 -5 5,0 -3 3,${exten_bp} \
+        -t ${n_thread} -j -x -v 1 -g  -O ${run}.e500 \
+        ${run}.${tag_name}.${suffix}.nr.bam 1>> ${log_file} 2>> ${log_file}
+    
+    echo -e "`date` --- ENDED ${run} cpu clustering --- \n" >> ${log_file}
+	
+	
+	# Rename loop files appropriately
+	mv ${run}.e500.clusters.cis.chiasig.gz ${run}.e500.clusters.cis.gz
+	mv ${run}.e500.clusters.trans.chiasig.gz ${run}.e500.clusters.trans.gz
+	
+	# Make subset file with intrachrom loops with PET_count >= 2
+	# for browsing in Excel
+	cis_file="${run}.e500.clusters.cis.gz"
+	be3_file="${run}.e500.clusters.cis.BE3"
+    zcat ${cis_file} | awk '{ if ( $7 >= 3 ) print }' > ${be3_file}
+    
+
+        
+    
+	# Get intrachrom pet count
+    #intra_chr_pet=$( cat ${run}.singlelinker.paired.UU.nr.span.xls | \
+    #    grep "second/best<0.95" -A5 | \
+    #    awk -F '[\t]' '{if(NR==5)print $2}' )
+    
+    # Get max pet count of a loop
+    #loop_max=$( sort -nrk7 ${be2_file}.peak_annot.E2 | head -n1 | \
+    #    awk '{ print $7 }' )
+    
+	# Create a file with normalized PET count of loops	
+	#awk -v x=${intra_chr_pet} '{ print $0, $7/x }' \
+	#    ${be3_file}.peak_annot.E2 \
+	#    > ${be3_file}.peak_annot.E2.norm
+	
+	
+	### Multi-resolution matrix file for Juicebox
+    # Generate .hic file
+    #java -Xmx32g -jar ${juicer} pre -r \
+    #    2500000,1000000,500000,250000,100000,50000,25000,10000,5000,1000 \
+    #    ${run}.e500.juice.gz ${run}.hic ${genome}
+    
+    ### Make .hic file for Juicebox
+    ### BAM --> pairs --> hic
+    # BAM to pairs
+    paired_tag_bam="${run}.singlelinker.paired.UU.nr.bam"
+    ${bin_dir}/pairix_src/util/bam2pairs/bam2pairs -c ${chrom_sizes} \
+        ${paired_tag_bam} ${run}
+    
+    # Pairs to .hic
+    juicer="${bin_dir}/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
+    hic_file="ChIA-PET_${genome}_${cell_type}_${ip_factor}_${run}_${run_type}_pairs.hic"
+    
+    java -Xmx2g -jar ${juicer} pre -r \
+        2500000,1000000,500000,250000,100000,50000,25000,10000,5000,1000 \
+        ${run}.bsorted.pairs.gz ${hic_file} ${chrom_sizes}
+    
+    
+    # Copy .hic file to URL directory
+    # for automatic viewing of 2D contact map
+    url_dir="/projects/encode/to_ctencode01/dev"
+    
+    if [ -d ${url_dir} ]; then
+        cp ${hic_file} ${url_dir}
+    fi
+    
+    ### Multi-resolution matrix file for HiGlass
+    ## Minimum resolution for HiGlass
+    #resolution=1000
+    
+    ## Divide chromosomes into bins
+    #${bin_dir}/conda/bin/cooler makebins \
+    #    ${chrom_sizes} \
+    #    ${resolution} \
+    #    > ${out_dir}/temp_chrom_bins.bed
+    
+    ## Make .cool file (1000bp resolution)
+    #${bin_dir}/conda/bin/cooler cload pairix -p 20\
+    #    ${out_dir}/tmp_chrom_bins.bed \
+    #    ${out_dir}/${run}.e500.cooler.bsorted.pairs.gz \
+    #    ${out_dir}/${run}.e500.higlass.cool
+    
+    ## Make final, multi-resolution .cool file (with zooming ability)
+    #${bin_dir}/conda/bin/cooler zoomify -p 20\
+    #    --no-balance ${out_dir}/${run}.e500.higlass.cool
+    
+    ## Remove intermediary file
+    #rm ${out_dir}/temp_chrom_bins.bed
+    #rm ${out_dir}/${run}.e500.higlass.cool
+        
+    # Split BAM file
+    #if [ ${ctrl_genome} != "none" ] && [ ${ctrl_genome} != "None" ]
+    #then
+    #    module load python/2.7.10
+    #    ${bin_dir}/split_bam_by_species.py -g ${genome} -c ${ctrl_genome}
+    #fi
+fi
+
 # Report completion of mapping
 echo "$0 done" >> 2.${run}.map_${tag_name}.done
 echo "$0 done" >> ${log_file}
 echo "`date`" >> ${log_file}
-
 
 # Submit next step in the pipeline
 if [ ${all_steps} == true ] && [ ${tag_name} == "singlelinker.paired" ]
@@ -204,10 +309,11 @@ then
         wall_time=20
     fi
 
-    ### 3. Make visualization files
+    ### 3. Peak calling
     # Submit the job
+    cd ${PBS_O_WORKDIR}
     job_3=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
     -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
-    -j oe -o ${out_dir}/3.${run}.make_visualization_files.o \
-    ${bin_dir}/3.make_visualization_files.pbs )
+    -j oe -o ${out_dir}/3.${run}.call_peaks.o \
+    ${bin_dir}/3.call_peaks.pbs )
 fi

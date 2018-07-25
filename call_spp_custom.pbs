@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Set parameters for the cluster
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=12:00:00
+#PBS -l mem=60GB
+#PBS -j oe
+
+
+# Call SPP with custom Z-score threshold
+# 2018
+# The Jackson Laboratory for Genomic Medicine
+
+
+# The help message:
+function usage
+{
+    echo -e "usage: qsub -F \"--conf CONF --out_dir OUT_DIR --z_thresh Z_THRESH 
+    \" call_spp_custom.pbs
+    " 
+}
+
+# Parse arguments from the command line
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --conf )           shift
+                                conf=$1
+                                ;;
+        -o | --out_dir )        shift
+                                out_dir=$1
+                                ;;
+        -z | --z_thresh )       shift
+                                z_thresh=$1
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+
+# Put output files in subdirectory named after the run
+cd ${PBS_O_WORKDIR}
+source ${conf}
+cd ${out_dir}
+
+# Load the required modules
+module load bedtools/2.22.0
+module load samtools/0.1.19
+module load R/3.2.1
+
+# Call peaks using SPP
+R --vanilla < ${bin_dir}/spp.R --args ${run}.for.BROWSER.down_sample.bam \
+    ${input_control} ${bin_dir} ${z_thresh}

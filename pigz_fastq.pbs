@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=10
+#PBS -l walltime=4:00:00
+#PBS -l mem=20GB
+#PBS -l vmem=20GB
+#PBS -j oe
+cd ${PBS_O_WORKDIR}
+
+module load pigz/2.3.3 
+
+files=$( ls *.fastq )
+
+for f in $files
+do
+    pigz -p 10 $f
+done

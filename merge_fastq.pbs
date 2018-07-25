@@ -1,0 +1,40 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=20:00:00
+#PBS -l mem=40GB
+#PBS -l vmem=40GB
+#PBS -j oe
+cd ${PBS_O_WORKDIR}
+module load pigz/2.3.3 
+
+# Get the run name from the path
+run=$( pwd | awk -F "/" '{print $NF}' )
+
+# Set the merged file names
+merged_r1="merged_${run}_R1.fastq"
+merged_r2="merged_${run}_R2.fastq"
+
+# Remove previously merged files 
+# to avoid appending
+rm -f ${merged_r1}
+rm -f ${merged_r2}
+
+# Get the individual R1 file names
+r1_file_names=$( ls *_R1*.gz )
+
+# Merge R1 and R2 files in the same order
+for r1_file in ${r1_file_names}
+do
+    # Merge R1
+    echo ${r1_file}
+    zcat ${r1_file} >> ${merged_r1}
+    
+    # Merge R2
+    r2_file=$( echo ${r1_file} | sed -e 's/_R1/_R2/g' )
+    echo ${r2_file}
+    zcat ${r2_file} >> ${merged_r2}
+done
+
+# Compress merged files
+pigz -p 10 ${merged_r1}
+pigz -p 10 ${merged_r2}

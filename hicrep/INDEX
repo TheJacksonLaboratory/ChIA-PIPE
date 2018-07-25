@@ -1,0 +1,13 @@
+HiCR1                   HiCR1
+HiCR2                   HiCR2
+MatToVec                Convert the HiC matrix format to vector format
+depth.adj               Sequencing depth adjustment
+get.scc                 calculate the stratum-adjusted correlation
+                        coefficient
+hicrep-package          HiCRep pipeline calculates reproducibility of
+                        Hi-C intrachromosome data
+htrain                  Train the smoothing parameter (neighborhood
+                        size).
+prep                    Pre-processing the Hi-C matrices
+smoothMat               smooth the Hi-C matrix with mean filter
+vstran                  Variance stablization transformation

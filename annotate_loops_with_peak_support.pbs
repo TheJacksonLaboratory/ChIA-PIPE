@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=10
+#PBS -l walltime=20:00:00
+#PBS -l mem=30GB
+#PBS -l vmem=30GB
+#PBS -j oe
+
+# Set loop and peak files
+cd ${PBS_O_WORKDIR}
+loop_file=$( ls *.e500.clusters.cis.BE3 )
+peak_file=$( ls *for.BROWSER.spp.z6.broadPeak )
+
+# Directory with the executable
+bin_dir=/projects/capurd/chia_pet/chia_pet_tool_2
+
+# Call script
+${bin_dir}/annotate_loops_with_peak_support.py \
+    -l ${loop_file} \
+    -p ${peak_file}
