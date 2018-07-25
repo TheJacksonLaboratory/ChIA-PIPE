@@ -1,3 +1,0 @@
-include src/*.h
-include LICENSE.txt
-include VERSION.txt
