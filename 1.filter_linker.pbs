@@ -53,7 +53,7 @@ min_tag_len=18
 
 
 ## Load required module
-module load pigz
+#module load pigz
 
 ## Move to output directory
 cd ${PBS_O_WORKDIR}

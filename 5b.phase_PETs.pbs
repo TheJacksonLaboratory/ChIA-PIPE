@@ -64,9 +64,9 @@ Arguments:
 " >> ${log_file}
 
 # Load the required modules
-module load bedtools
-module load samtools/0.1.19
-module load java/1.7.0
+#module load bedtools
+#module load samtools/0.1.19
+#module load java/1.7.0
 
 
 # Create BAM file name

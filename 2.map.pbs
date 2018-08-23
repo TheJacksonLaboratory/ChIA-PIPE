@@ -75,9 +75,9 @@ else
 fi
 
 ## Load required modules
-module load pigz
-module load java/1.7.0
-module load perl/5.26.0
+#module load pigz
+#module load java/1.7.0
+#module load perl/5.26.0
 
 ## Create name of the log file
 log_file=2.${run}.map_${tag_name}.log

@@ -53,8 +53,8 @@ source ${conf}
 cd ${out_dir}
 
 # Load the required modules
-module load bedtools/2.26.0
-module load samtools/1.5
+#module load bedtools/2.26.0
+#module load samtools/1.5
 
 
 # Create name of the log file
@@ -140,7 +140,7 @@ fi
 if [ ${peak_caller} == "spp" ] || [ ${peak_caller} == "SPP" ]
 then
     # Load R
-    module load R/3.2.1
+    #module load R/3.2.1
     
     # Report SPP to log file
     echo -e "`date` Peak calling using SPP..\n" >> ${log_file}
@@ -151,7 +151,7 @@ then
         ${input_control} ${bin_dir} ${z_thresh}
 else
     # Load MACS2
-    module load MACS/2.1.0.20151222
+    #module load MACS/2.1.0.20151222
     
     # Report MACS2 to log file
     echo -e "`date` Peak calling using MACS2..\n" >> ${log_file}
@@ -206,7 +206,7 @@ min_pet_count=$( sed "${cutoff_line}q;d" \
     ${be3_file}.peak_annot.E2.freq_sorted | awk '{ print $7 }' )
 
 ### Call CCDs
-module load bedtools/2.26.0
+#module load bedtools/2.26.0
 
 # Set input file for calling CCDs
 ccd_input="${be3_file}.peak_annot.E2"

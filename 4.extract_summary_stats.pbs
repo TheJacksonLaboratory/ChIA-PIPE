@@ -44,8 +44,8 @@ source ${conf}
 cd ${out_dir}
 
 ## Load the required module
-module load bedtools/2.22.0
-module load samtools/1.5
+#module load bedtools/2.22.0
+#module load samtools/1.5
 
 ## Set the output file
 out_file=${run}.final_stats.tsv

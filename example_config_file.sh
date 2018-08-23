@@ -1,5 +1,15 @@
 ### Config file for ChIA PIPE
 
+# Dependencies
+module load pigz
+module load java/1.7.0
+module load perl/5.26.0
+module load bedtools/2.26.0
+module load samtools/1.5
+module load R/3.2.1
+module load MACS/2.1.0.20151222
+
+
 # The directory containing the executables for ChIA PIPE
 bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2"
 
