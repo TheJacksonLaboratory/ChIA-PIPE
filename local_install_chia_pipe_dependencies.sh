@@ -105,9 +105,8 @@ ln -s anaconda2/bin/conda conda
 
 
 ## Install MACS peak caller
-wget https://github.com/taoliu/MACS/archive/master.zip -O MACS.zip
-unzip MACS.zip
-cd MACS-master
+./conda install -c bioconda macs2
+ln -s anaconda2/bin/macs2 macs2
 
 
 ####### TO DO #########
