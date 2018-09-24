@@ -33,6 +33,9 @@ done
 ## Move to the install directory
 cd ${install_dir}
 
+## Insert install directory at front of PATH
+export PATH="${install_dir}:${PATH}"
+
 
 ## Install pigz
 wget http://zlib.net/pigz/pigz-2.4.tar.gz
@@ -80,16 +83,6 @@ cd ../../
 rm -r bedtools2
 
 
-## Install R/3.2.1
-http://lib.stat.cmu.edu/R/CRAN/src/base/R-3/R-3.2.1.tar.gz
-tar -xzvf R-3.2.1.tar.gz
-cd R-3.2.1
-./configure --prefix=${install_dir}
-make
-cd ../
-ln -s R-3.2.1/bin/R R
-
-
 ## Install conda
 wget https://repo.anaconda.com/archive/Anaconda2-5.2.0-Linux-x86_64.sh
 bash Anaconda2-5.2.0-Linux-x86_64.sh
@@ -109,23 +102,24 @@ ln -s anaconda2/bin/conda conda
 ln -s anaconda2/bin/macs2 macs2
 
 
-####### TO DO #########
-
-## Install liblzma (dependency for samtools/1.5)
-
-
-## Install htslib/1.5  (dependency for samtools/1.5)
-wget https://sourceforge.net/projects/samtools/files/samtools/1.5/\
-htslib-1.5.tar.bz2
-#
-tar xvjf htslib-1.5.tar.bz2
-cd htslib-1.5
-
-
 ## Install samtools/1.5
 wget https://sourceforge.net/projects/samtools/files/samtools/1.5/\
 samtools-1.5.tar.bz2
 #
-tar xvjf samtools-1.5.tar.bz2
+tar -xvjf samtools-1.5.tar.bz2
 cd samtools-1.5
+./configure --disable-lzma
 make
+cp samtools ../
+cd ../
+rm -r samtools-1.5
+
+
+## Install R/3.2.1
+http://lib.stat.cmu.edu/R/CRAN/src/base/R-3/R-3.2.1.tar.gz
+tar -xzvf R-3.2.1.tar.gz
+cd R-3.2.1
+./configure --prefix=${install_dir}
+make
+cd ../
+ln -s R-3.2.1/bin/R R
