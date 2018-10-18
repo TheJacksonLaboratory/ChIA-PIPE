@@ -36,6 +36,21 @@ cd ${install_dir}
 ## Insert install directory at front of PATH
 export PATH="${install_dir}:${PATH}"
 
+## Install Anaconda2
+wget https://repo.anaconda.com/archive/Anaconda2-5.2.0-Linux-x86_64.sh
+bash Anaconda2-5.2.0-Linux-x86_64.sh -b -p ${install_dir}/anaconda2
+ln -s anaconda2/bin/python python
+ln -s anaconda2/bin/conda conda
+
+
+## Install pysam (Python package, not included with conda)
+./conda install -c bioconda pysam
+
+
+## Install MACS peak caller
+./conda install -c bioconda macs2
+ln -s anaconda2/bin/macs2 macs2
+
 
 ## Install pigz
 wget http://zlib.net/pigz/pigz-2.4.tar.gz
@@ -83,25 +98,6 @@ cd ../../
 rm -r bedtools2
 
 
-## Install conda
-wget https://repo.anaconda.com/archive/Anaconda2-5.2.0-Linux-x86_64.sh
-bash Anaconda2-5.2.0-Linux-x86_64.sh
-# ... Answer questions and set install dir to:
-# /path/to/install/dir/anaconda2
-#
-ln -s anaconda2/bin/python python
-ln -s anaconda2/bin/conda conda
-
-
-## Install pysam (Python package, not included with conda)
-./conda install -c bioconda pysam
-
-
-## Install MACS peak caller
-./conda install -c bioconda macs2
-ln -s anaconda2/bin/macs2 macs2
-
-
 ## Install samtools/1.5
 wget https://sourceforge.net/projects/samtools/files/samtools/1.5/\
 samtools-1.5.tar.bz2
@@ -116,7 +112,7 @@ rm -r samtools-1.5
 
 
 ## Install R/3.2.1
-http://lib.stat.cmu.edu/R/CRAN/src/base/R-3/R-3.2.1.tar.gz
+wget http://lib.stat.cmu.edu/R/CRAN/src/base/R-3/R-3.2.1.tar.gz
 tar -xzvf R-3.2.1.tar.gz
 cd R-3.2.1
 ./configure --prefix=${install_dir}
