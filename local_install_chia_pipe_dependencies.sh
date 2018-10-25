@@ -115,7 +115,7 @@ rm -r samtools-1.5
 wget http://lib.stat.cmu.edu/R/CRAN/src/base/R-3/R-3.2.1.tar.gz
 tar -xzvf R-3.2.1.tar.gz
 cd R-3.2.1
-./configure --prefix=${install_dir}
+./configure --prefix=${install_dir} --with-x=no
 make
 cd ../
 ln -s R-3.2.1/bin/R R

@@ -78,8 +78,8 @@ Arguments:
 # Report linker detection start
 echo "
 `date` --- Linker detection started on: ---
-    ${data_dir}/${run}_R1.fastq.gz,
-    ${data_dir}/${run}_R2.fastq.gz
+    ${data_dir}/${r1_fastq},
+    ${data_dir}/${r2_fastq}
 " >> ${log_file}
 
 
