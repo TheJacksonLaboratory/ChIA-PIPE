@@ -299,8 +299,8 @@ then
     
     ### 5. Phase loops
     # Submit the job
-    job_5a=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
+    job_5=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
     -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
-    -j oe -o ${out_dir}/5a.${run}.phase_loops.o \
-    ${bin_dir}/5a.phase_loops.pbs )
+    -j oe -o ${out_dir}/5.${run}.phase_loops.o \
+    ${bin_dir}/5.phase_loops.pbs )
 fi

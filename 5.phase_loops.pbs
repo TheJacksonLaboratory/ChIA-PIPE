@@ -68,20 +68,20 @@ Arguments:
 
 
 # Load the required modules
-#module load R/3.2.1
-#module load perl/5.24.0
-#module load bedtools/2.26.0
+module load R/3.2.1
+module load perl/5.24.0
+module load bedtools/2.26.0
 
 # Create file names
 bam_file=${run}.for.BROWSER.bam
-loop_file=${run}.e500.clusters.cis.chiasig
+loop_file=${run}.e500.clusters.cis.BE3
 pileup_file=${run}.total_snp_pileup.txt
 
 if [ ${peak_caller} == "spp" ] || [ ${peak_caller} == "SPP" ]
 then
-    peak_file=${run}.for.BROWSER.spp.broadPeak
+    peak_file=${run}.for.BROWSER.spp.z6.broadPeak
 else
-    peak_file=${run}.all_peaks.narrowPeak
+    peak_file=${run}.no_input_all_peaks.narrowPeak
 fi
 
 
@@ -188,84 +188,43 @@ echo -e "`date` Counting SNP allele bias and assessing significance.." \
 
 # Allele-biased SNPs (R)
 Rscript ${bin_dir}/compute_phased_SNP.R \
-    ${pileup_file} ${snp_file} TRUE 0.1
+    ${run} ${pileup_file} ${snp_file} TRUE 0.1
 
-# Allele-biased SNPs (Python)
-#${bin_dir}/compute_phased_snp.py -p ${pileup_file} -s ${snp_file} -q 0.1
+# Create BED file of All SNPs
+cat ${run}.snp_qvalues.txt | grep -v biased | awk -v OFS='\t' \
+    '{ print $1, $2, $2+200, $7, "+", $4, $5, $6, "153,153,153"}' \
+    > ${run}.snp_qvalues.bed
+
+# Create BED file of Phased SNPs
+cat ${run}.snp_qvalues.txt | grep Yes | awk -v OFS='\t' \
+    '{ 
+    if ($4 >= $5) 
+        print $1, $2, $2+200, $7, "+", $4, $5, $6, "26,152,80"
+    else
+        print $1, $2, $2+200, $7, "+", $4, $5, $6, "215,48,39"
+    }' \
+    > ${run}.snp_qvalues.phased.bed
+
+
+# Make bedgraph of Paternal allele counts
+cat phased_snp_qvalue.txt | grep -v biased | \
+    awk -v OFS='\t' '{ print $1, $2, $2+100, $4 }' \
+    > ${run}.snp_coverage.Paternal.100.bedgraph
+
+# Make bedgraph of maternal allele counts
+cat phased_snp_qvalue.txt | grep -v biased | \
+    awk -v OFS='\t' '{ print $1, $2, $2+10, $5 }' \
+    > ${run}.snp_coverage.Maternal.10.bedgraph
+
 
 echo -e "`date` Completed counting SNP allele bias..\n" >> ${log_file}
 
 
-
-
-### Get unique interactions and anchors
-# Unzip compressed loop file to copy
-
-echo -e "`date` Getting unique anchors and merging interactions..\n" >> \
-    ${log_file}
-
-
-gunzip -c ${loop_file}.gz > ${loop_file}
-
-# Get loops with count >= 4
-awk '$7>=4{print}' ${loop_file} > ${loop_file}_PET_4+
-
-# Remove uncompressed loop file
-rm ${loop_file}
-
-# Remove chrM
-awk '{if(/chrM/){$0=""}else{print $1,$2,$3,$4,$5,$6,$7}}' \
-    ${loop_file}_PET_4+  > raw_interactions
-
-# Separate loops into one node per line
-# Then sort
-awk '{print $1,$2,$3,$7,($2+$3)/2,"\n",$4,$5,$6,$7,($5+$6)/2}' \
-    raw_interactions | awk '{printf "%s\t%d\t%d\t%d\t%d\n",$1,$2,$3,$4,$5}' | \
-    sort -k1,1 -k2n,2  | uniq > raw_nodes
-
-# Find unique nodes and take the center
-awk 'NR==1{tag=$1;start=$2;end=$3;pet=$4;center=$5}NR>1{
-        if($1==tag){
-                               if($2<=end && $3>=end){
-                                         end=$3
-                                      if($4>=pet){
-                                         pet=$4
-                                         center=$5 }
-                                      else{
-                                         center=center
-                                           }
-                                                  }
-                               else if($3<end) {
-                                      if($4>=pet){
-                                         pet=$4
-                                         center=$5 }
-                                      else{
-                                          center=center
-                                           }
-                                               }
-                               else{
-                                   print tag,start,end,center;
-                                   start=$2;end=$3;tag=$1;pet=$4;center=$5
-                                }
-                }
-        else {
-                 print tag,start,end,center;
-                 tag=$1;start=$2;end=$3;pet=$4;center=$5
-                 count=0
-             }
-             }END{print tag,start,end,center}' raw_nodes | \
-                awk '{printf "%s\t%d\t%d\t%d\n",$1,$2,$3,$4}'> raw_nodes_center
-
-# Reformat the file of unique nodes
-awk '{printf "%s\t%d\t%d\n",$1,$2,$3}' raw_nodes_center > unique_nodes
-
-# Find interactions among unique nodes
-bedtools intersect -a raw_nodes -b raw_nodes_center -wa -wb | \
-    awk 'NR==FNR{a[$1,$2,$3]=$6"\t"$7"\t"$8}NR>FNR{print a[$1,$2,$3]"\t"a[$4,$5,$6]}' -\
-    raw_interactions > unique_nodes_interactions
-
-echo -e "`date` Completed unique anchors and merging interactions..\n" >> \
-    ${log_file}
+#######
+cat phased_snp_qvalue.Yes.txt | grep -v biased | \
+    awk -v OFS='\t' '{ print $1, $2, $2+1, $4 }' \
+    > ${run}.snp_coverage.Yes.Paternal.1.bedgraph
+########
 
 
 ### Compute phased interactions
@@ -275,37 +234,22 @@ echo -e "`date` Completed unique anchors and merging interactions..\n" >> \
 echo "`date` Identifying biased loops (from raw loops and biased SNPs)..
 " >> ${log_file}
 
-perl ${bin_dir}/compute_phased_loops.pl \
-    phased_snp_qvalue.txt ${peak_file} unique_nodes_interactions
 
-# Alternatively, ${loop_file} could be used instead of unique_nodes_interactions
+perl ${bin_dir}/compute_phased_loops.pl \
+    phased_snp_qvalue.txt ${peak_file} ${loop_file}
+
+
+# Create two subset BED files
+# BED file of only phased peaks
+cat ${peak_file}.SNP_Phased.browser.bed | grep -v Unphased \
+    > ${peak_file}.SNP_Phased.Paternal_or_Maternal.bed
+
+# BED file of only unphased peaks
+cat ${peak_file}.SNP_Phased.browser.bed | grep Unphased \
+    > ${peak_file}.SNP_Phased.Unphased.bed
+
 
 
 echo -e "`date` Completed identifying biased loops..\n" >> ${log_file}
 echo "`date` $0 done" >> ${log_file}
 
-
-if [ ${all_steps} == true ] && [ ${snp_file} != "none" ]
-then
-    n_thread=20
-    mem=120
-    
-    if [ ${run_type} == "miseq" ]
-    then
-        wall_time=10
-    elif [ ${run_type} == "hiseq"] || [ ${run_type} == "nextseq" ]
-    then
-        wall_time=10
-    else
-        wall_time=10
-    fi
-    
-    ### 5. Phase PETs
-    # Submit the job
-    cd ${PBS_O_WORKDIR}
-    
-    job_5b=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
-    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
-    -j oe -o ${out_dir}/5b.${run}.phase_PETs.o \
-    ${bin_dir}/5b.phase_PETs.pbs )
-fi
