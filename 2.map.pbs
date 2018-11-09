@@ -59,6 +59,9 @@ done
 self_bp=8000
 exten_bp=500
 
+# Set hybrid status
+hybrid="none"
+
 ## Put output files in subdirectory named after the run
 cd ${PBS_O_WORKDIR}
 source ${conf}
@@ -73,6 +76,13 @@ else
     map_qual=30
     suffix="UU"
 fi
+
+
+# Update mapping parameters for hybrid data
+if [ ${hybrid} != "none" ]; then
+    map_qual=0
+fi
+
 
 ## Load required modules
 #module load pigz
