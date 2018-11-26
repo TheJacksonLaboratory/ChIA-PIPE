@@ -1,7 +1,7 @@
 # README
 # ChIA-PIPE
-# The Jackson Laboratory for Genomic Medicine
-# 26 November 2018
+## The Jackson Laboratory for Genomic Medicine
+## 26 November 2018
 
 
 ## Download ChIA-PIPE
@@ -13,7 +13,9 @@ bash local_install_chia_pipe_dependencies.sh -i ${dep_dir}
 
 ## Download test data from Dropbox
 https://www.dropbox.com/sh/kiunzdfj74dpamh/AAB3u4vVGHIUSZoiPSjEYuYva?dl=0
+
 mkdir -p LDK0004-ds
+
 cp LDK0004-ds_*.fastq.gz LDK0004-ds
 
 ## Launch ChIA-PIPE
