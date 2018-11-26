@@ -9,6 +9,7 @@ git clone git@github.com:TheJacksonLaboratory/chia_pipe.git
 
 ## Install ChIA-PIPE dependencies
 dep_dir="/path/to/local/install/dependencies"
+
 bash local_install_chia_pipe_dependencies.sh -i ${dep_dir}
 
 ## Download test data from Dropbox
