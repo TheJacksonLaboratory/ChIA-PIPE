@@ -7,6 +7,9 @@
 ## Download ChIA-PIPE
 git clone git@github.com:TheJacksonLaboratory/chia_pipe.git
 
+## Or download directly:
+wget https://github.com/TheJacksonLaboratory/chia_pipe.zip
+
 ## Install ChIA-PIPE dependencies
 dep_dir="/path/to/local/install/dependencies"
 
