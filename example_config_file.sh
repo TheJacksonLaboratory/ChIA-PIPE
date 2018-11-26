@@ -10,11 +10,14 @@ module load R/3.2.1
 module load MACS/2.1.0.20151222
 
 
-# The directory containing the executables for ChIA PIPE
-bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2"
+# The directory containing the executables for ChIA-PIPE
+bin_dir="/projects/encode/chia_pipe"
+
+# The directory of the local install of ChIA-PIPE dependencies
+dep_dir="/projects/ruan-lab/capurd/bin_chia_pipe"
 
 # The name of the sequencing run
-run="LHH0066"
+run="LDK0004-ds"
 
 # The type of sequencing run:
 #    "miseq" - around 30 million reads
@@ -23,30 +26,30 @@ run="LHH0066"
 run_type="miseq"
 
 # The factor for which the IP was performed
-ip_factor="CTCF"
+ip_factor="RNAPII"
 
 # Cell type
-cell_type="HG00731"
+cell_type="Kc167"
 
 # The directory containing the input FASTQ files
-data_dir="/projects/ruan-lab/processing/fastq/${run}"
+data_dir="LDK0004-ds/"
 
 # The names of the FASTQ files
-r1_fastq="merged_${run}_R1.fastq.gz"
-r2_fastq="merged_${run}_R2.fastq.gz"
+r1_fastq="LDK0004-ds_*_R1_*.fastq.gz"
+r2_fastq="LDK0004-ds_*_R2_*.fastq.gz"
 
 
 # The name of the primary genome
 # For example: "hg19", "hg38", "dm3", "mm9", "mm10"
-genome="hg38"
+genome="dm3"
 
 # The reference genome FASTA file for aligning the reads
 # (The same directory must also contain the BWA index files)
-fasta="/projects/ruan-lab/processing/genomes/hg38/hg38.fa"
+fasta="/projects/ruan-lab/processing/genomes/dm3/dm3.fa"
 
 # The chrom.sizes file from UCSC Genome browser
 # for the relevant genome build
-chrom_sizes="/projects/ruan-lab/processing/genomes/hg38/hg38.chrom.sizes"
+chrom_sizes="/projects/ruan-lab/processing/genomes/dm3/dm3.chrom.sizes"
 
 # The BAM file for the ChIP-seq input control
 # (Required for spp; not required for macs2)

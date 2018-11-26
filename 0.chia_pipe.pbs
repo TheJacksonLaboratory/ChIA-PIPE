@@ -38,6 +38,9 @@ done
 conf="${PBS_O_WORKDIR}/${conf}"
 source ${conf}
 
+# Add dependency dir to path
+export PATH=${PATH}:${dep_dir}
+
 # Set the output directory for writing files
 out_dir="${PBS_O_WORKDIR}/${run}"
 mkdir -p ${out_dir}

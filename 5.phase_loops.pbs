@@ -52,6 +52,8 @@ cd ${PBS_O_WORKDIR}
 source ${conf}
 cd ${out_dir}
 
+# Add dependency dir to path
+export PATH=${PATH}:${dep_dir}
 
 ## Create name of the log file
 log_file=5a.${run}.phase_loops.log

@@ -52,6 +52,9 @@ cd ${PBS_O_WORKDIR}
 source ${conf}
 cd ${out_dir}
 
+# Add dependency dir to path
+export PATH=${PATH}:${dep_dir}
+
 # Load the required modules
 #module load bedtools/2.26.0
 #module load samtools/1.5

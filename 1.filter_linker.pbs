@@ -61,6 +61,9 @@ source ${conf}
 mkdir -p ${out_dir}
 cd ${out_dir}
 
+# Add dependency dir to path
+export PATH=${PATH}:${dep_dir}
+
 ## Create name of the log file
 log_file=1.${run}.filter_linker.log
 
