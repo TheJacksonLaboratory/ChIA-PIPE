@@ -13,8 +13,8 @@ bash local_install_chia_pipe_dependencies.sh -i ${dep_dir}
 
 ## Download test data from Dropbox
 https://www.dropbox.com/sh/kiunzdfj74dpamh/AAB3u4vVGHIUSZoiPSjEYuYva?dl=0
-mkdir -p LDK0004-ds
-cp LDK0004-ds_*.fastq.gz LDK0004-ds
+mkdir -p fastq
+cp LDK0004-ds_*.fastq.gz fastq
 
 ## Launch ChIA-PIPE
 qsub -F "--conf my_config_file.sh" 0.chia_pipe.pbs

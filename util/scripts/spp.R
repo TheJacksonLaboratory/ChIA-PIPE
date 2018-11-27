@@ -6,10 +6,10 @@ bin_dir = args[3]
 z_thresh = as.numeric(args[4])
 
 # Load packages and set library path environment variable
-library("Rsamtools", lib.loc=bin_dir)
-library("fastcluster", lib.loc=bin_dir)
-library("spp", lib.loc=bin_dir)
-.libPaths(bin_dir)
+library("Rsamtools", lib.loc=paste0(bin_dir, "/util/"))
+library("fastcluster", lib.loc=paste0(bin_dir, "/util/"))
+library("spp", lib.loc=paste0(bin_dir, "/util/"))
+.libPaths(paste0(bin_dir, "/util/"))
 
 
 # Read the BAM files for the ChIP sample and the input-control sample

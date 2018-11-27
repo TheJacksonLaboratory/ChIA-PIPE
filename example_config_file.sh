@@ -1,20 +1,10 @@
 ### Config file for ChIA PIPE
 
-# Dependencies
-module load pigz
-module load java/1.7.0
-module load perl/5.26.0
-module load bedtools/2.26.0
-module load samtools/1.5
-module load R/3.2.1
-module load MACS/2.1.0.20151222
-
-
 # The directory containing the executables for ChIA-PIPE
 bin_dir="/projects/encode/chia_pipe"
 
 # The directory of the local install of ChIA-PIPE dependencies
-dep_dir="/projects/ruan-lab/capurd/bin_chia_pipe"
+dep_dir="dep_dir"
 
 # The name of the sequencing run
 run="LDK0004-ds"
@@ -32,7 +22,7 @@ ip_factor="RNAPII"
 cell_type="Kc167"
 
 # The directory containing the input FASTQ files
-data_dir="LDK0004-ds/"
+data_dir="../fastq/"
 
 # The names of the FASTQ files
 r1_fastq="LDK0004-ds_*_R1_*.fastq.gz"
@@ -82,7 +72,18 @@ all_steps=true
 clean=true
 
 # The ChIA-PET Utilities program
-main_prog="${bin_dir}/cpu-dir/cpu-dir/cpu"
+main_prog="${bin_dir}/util/cpu-dir/cpu-dir/cpu"
 
 # The Juicer executable
-juicer="${bin_dir}/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
+juicer="${bin_dir}/util/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
+
+
+### Uncomment to module load dependencies
+# module load pigz
+# module load java/1.7.0
+# module load perl/5.26.0
+# module load bedtools/2.26.0
+# module load samtools/1.5
+# module load R/3.2.1
+# module load MACS/2.1.0.20151222
+###

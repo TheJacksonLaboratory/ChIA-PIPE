@@ -6,10 +6,10 @@
 #PBS -j oe
 
 
-# ChIA-PET Tool 2
+# ChIA-PIPE
 #         Step 1: Filter the linker sequence
 #         (Requires single-linker ChIA-PET data)
-# 2017
+# 2018
 # The Jackson Laboratory for Genomic Medicine
 
 
@@ -62,7 +62,7 @@ mkdir -p ${out_dir}
 cd ${out_dir}
 
 # Add dependency dir to path
-export PATH=${PATH}:${dep_dir}
+export PATH=${dep_dir}:${PATH}
 
 ## Create name of the log file
 log_file=1.${run}.filter_linker.log

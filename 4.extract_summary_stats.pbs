@@ -6,9 +6,9 @@
 #PBS -j oe
 
 
-# ChIA-PET Tool v2
+# ChIA-PIPE
 #         Step 4: Extract summary statistics from output files
-# 2017
+# 2018
 # The Jackson Laboratory for Genomic Medicine
 
 
@@ -44,7 +44,7 @@ source ${conf}
 cd ${out_dir}
 
 # Add dependency dir to path
-export PATH=${PATH}:${dep_dir}
+export PATH=${dep_dir}:${PATH}
 
 ## Load the required module
 #module load bedtools/2.22.0
@@ -250,18 +250,14 @@ done
 echo -e "pets_number>10\t"$(zcat *cis.gz | awk '$7 >10 {print}' | \
     wc -l | xargs printf "%'.f") >> ${out_file}
 
-# Write significant intra-chr cluster count (ChiaSig)
-#chia_sig=$( cat *.BE2.sigf.interactions | grep -v '#' | wc -l )
-#echo -e "ChiaSig\t"${chia_sig} >> ${out_file}
-
-# Write loops with peak support
-if [ ${ip_factor} == 'CTCF' ]; then
-    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
-else
-    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
-fi
-
-echo -e "Loops_with_peak_support\t"${loops_pk_supp} >> ${out_file}
+## Write loops with peak support
+#if [ ${ip_factor} == 'CTCF' ]; then
+#    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
+#else
+#    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
+#fi
+#
+#echo -e "Loops_with_peak_support\t"${loops_pk_supp} >> ${out_file}
 
 ## Clusters (inter-chr)
 # Write inter-chr cluster count

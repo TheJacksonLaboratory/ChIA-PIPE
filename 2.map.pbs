@@ -8,9 +8,9 @@
 #PBS -j oe
 
 
-# ChIA-PET Tool 2
+# ChIA-PIPE
 #         Step 2: Map the reads
-# 2017
+# 2018
 # The Jackson Laboratory for Genomic Medicine
 
 
@@ -68,7 +68,7 @@ source ${conf}
 cd ${out_dir}
 
 # Add dependency dir to path
-export PATH=${PATH}:${dep_dir}
+export PATH=${dep_dir}:${PATH}
 
 # Set mapping parameters and file suffix
 if [ ${tag_name} == "singlelinker.single" ]; then
@@ -236,11 +236,11 @@ then
     ### BAM --> pairs --> hic
     # BAM to pairs
     paired_tag_bam="${run}.singlelinker.paired.UU.nr.bam"
-    ${bin_dir}/pairix_src/util/bam2pairs/bam2pairs -c ${chrom_sizes} \
+    ${bin_dir}/util/pairix_src/util/bam2pairs/bam2pairs -c ${chrom_sizes} \
         ${paired_tag_bam} ${run}
     
     # Pairs to .hic
-    juicer="${bin_dir}/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
+    juicer="${bin_dir}/util/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
     hic_file="ChIA-PET_${genome}_${cell_type}_${ip_factor}_${run}_${run_type}_pairs.hic"
     
     java -Xmx2g -jar ${juicer} pre -r \

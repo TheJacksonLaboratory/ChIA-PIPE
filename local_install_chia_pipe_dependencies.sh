@@ -34,6 +34,7 @@ done
 cd ${install_dir}
 
 ## Insert install directory at front of PATH
+install_dir=$( pwd)
 export PATH="${install_dir}:${PATH}"
 
 ## Install Anaconda2

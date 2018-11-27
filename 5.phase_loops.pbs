@@ -8,9 +8,9 @@
 #PBS -j oe
 
 
-# ChIA-PET Tool v2
+# ChIA-PIPE
 #         Step 5a: Phase the peaks and loops
-# 2017
+# 2018
 # The Jackson Laboratory for Genomic Medicine
 
 # The help message:
@@ -53,7 +53,7 @@ source ${conf}
 cd ${out_dir}
 
 # Add dependency dir to path
-export PATH=${PATH}:${dep_dir}
+export PATH=${dep_dir}:${PATH}
 
 ## Create name of the log file
 log_file=5a.${run}.phase_loops.log
@@ -70,9 +70,9 @@ Arguments:
 
 
 # Load the required modules
-module load R/3.2.1
-module load perl/5.24.0
-module load bedtools/2.26.0
+#module load R/3.2.1
+#module load perl/5.24.0
+#module load bedtools/2.26.0
 
 # Create file names
 bam_file=${run}.for.BROWSER.bam
