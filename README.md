@@ -1,9 +1,11 @@
-# ChIA-PIPE
-## README
-## The Jackson Laboratory for Genomic Medicine
-## 26 November 2018
+## ChIA-PIPE
+### README
+### The Jackson Laboratory for Genomic Medicine
+### 26 November 2018
+#
+#
 
-## Initialize outer working directory
+## (a) Initialize outer working directory
 ```bash
 mkdir -p testing_chia_pipe
 cd testing_chia_pipe
