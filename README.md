@@ -1,8 +1,6 @@
-## ChIA-PIPE
-### README
+## ChIA-PIPE README
 ### The Jackson Laboratory for Genomic Medicine
 ### 26 November 2018
-#
 #
 
 ## (a) Initialize outer working directory
