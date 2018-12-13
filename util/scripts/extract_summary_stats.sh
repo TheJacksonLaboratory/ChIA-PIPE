@@ -1,13 +1,7 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1
-#PBS -l walltime=1:00:00
-#PBS -l mem=2GB
-#PBS -l vmem=2GB
-#PBS -j oe
-
 
 # ChIA-PIPE
-#         Step 4: Extract summary statistics from output files
+#         Extract summary statistics from output files
 # 2018
 # The Jackson Laboratory for Genomic Medicine
 
@@ -15,8 +9,8 @@
 ## The help message:
 function usage
 {
-    echo -e "usage: qsub -F \"--conf ${conf} --out_dir ${out_dir}\"
-    4.extract_summary_stats.pbs
+    echo -e "usage: bash extract_summary_stats.sh 
+    --conf ${conf} --out_dir ${out_dir}
     " 
 }
 
@@ -40,7 +34,6 @@ done
 
 
 ## Move to output directory
-cd ${PBS_O_WORKDIR}
 source ${conf}
 cd ${out_dir}
 
@@ -266,26 +259,3 @@ done
 # Get inter-chr cluster count with > 10 PETs
 echo -e "pets_number>10\t"$(zcat *trans.gz | \
     awk '$7 >10 {print}' | wc -l | xargs printf "%'.f") >> ${out_file}
-
-
-
-if [ ${all_steps} == true ] && [ ${snp_file} != "none" ]
-then
-    
-    if [ ${run_type} == "miseq" ]
-    then
-        wall_time=40
-    elif [ ${run_type} == "hiseq"] || [ ${run_type} == "nextseq" ]
-    then
-        wall_time=60
-    else
-        wall_time=80
-    fi
-    
-    ### 5. Phase loops
-    # Submit the job
-    job_5=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
-    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
-    -j oe -o ${out_dir}/5.${run}.phase_loops.o \
-    ${bin_dir}/5.phase_loops.pbs )
-fi
