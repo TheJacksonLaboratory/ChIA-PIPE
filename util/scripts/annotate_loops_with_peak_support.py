@@ -1,4 +1,4 @@
-#!/projects/capurd/chia_pet/chia_pet_tool_2/conda/bin/python
+###/projects/capurd/chia_pet/chia_pet_tool_2/conda/bin/python
 import os
 import commands
 import argparse

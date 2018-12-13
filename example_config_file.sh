@@ -1,10 +1,6 @@
-### Config file for ChIA PIPE
+##### Config file for ChIA PIPE ####
 
-# The directory containing the executables for ChIA-PIPE
-bin_dir="/projects/encode/chia_pipe"
-
-# The directory of the local install of ChIA-PIPE dependencies
-dep_dir="dep_dir"
+### 1) Library information
 
 # The name of the sequencing run
 run="LDK0004-ds"
@@ -28,6 +24,15 @@ data_dir="../fastq/"
 r1_fastq="LDK0004-ds_*_R1_*.fastq.gz"
 r2_fastq="LDK0004-ds_*_R2_*.fastq.gz"
 
+
+
+### 2) Dependency information
+
+# The directory containing the executables for ChIA-PIPE
+bin_dir="/projects/encode/chia_pipe"
+
+# The directory of the local install of ChIA-PIPE dependencies
+dep_dir="dep_dir"
 
 # The name of the primary genome
 # For example: "hg19", "hg38", "dm3", "mm9", "mm10"
@@ -54,8 +59,7 @@ basic_folder="New user testing"
 
 
 
-
-## Advanced options ####
+## 3) Advanced options: how to run the pipeline
 
 # The phased SNP file for allele-specific analysis
 # (If not available, set to "none")
@@ -77,8 +81,42 @@ main_prog="${bin_dir}/util/cpu-dir/cpu-dir/cpu"
 # The Juicer executable
 juicer="${bin_dir}/util/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar"
 
+# The number of threads to use on the HPC
+n_thread=20
 
-### Uncomment to module load dependencies
+# The amount of memory to use on the HPC (in GB)
+mem=60
+
+
+
+## 4) Expert options: detailed parameters
+
+# The bridge linker sequence used during ChIA-PET
+linker_a="ACGCGATATCTTATCTGACT"
+
+# The second half linker sequence (if two linker sequences were used)
+linker_b="none"
+
+# The minimum tag length required for aligning to the reference
+# genome after linker filtering
+min_tag_len=18
+
+# The span threshold for calling an interaction as 
+#self-ligation vs inter-ligation
+self_bp=8000
+
+# The tag extension length during loop clustering
+exten_bp=500
+
+# The Z-score threshold for peak calling with SPP
+z_thresh=6
+
+# The name of the genetic cross if working with a hybrid strain
+hybrid="none"
+
+
+
+### 5) Uncomment below to module load dependencies
 # module load pigz
 # module load java/1.7.0
 # module load perl/5.26.0

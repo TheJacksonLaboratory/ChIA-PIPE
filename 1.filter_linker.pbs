@@ -16,16 +16,10 @@
 ## The help message:
 function usage
 {
-    echo -e "usage: bash 1.filter_linker.pbs -c CONF -o OUT_DIR
+    echo -e "usage: qsub -F \"--conf ${conf} --out_dir ${out_dir}\" 
+    1.filter_linker.pbs
     " 
 }
-
-## Default values for the arguments
-main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
-run="LHG0018"
-data_dir="/Sequence_pool/bridge_chiapet/data/"
-out_dir="/projects/capurd/testing_chia_pet_3/${run}"
-all_steps=true
 
 ## Parse arguments from the command line
 while [ "$1" != "" ]; do
@@ -45,15 +39,6 @@ while [ "$1" != "" ]; do
     shift
 done
 
-# Linker detection parameters
-n_thread=20
-linker_a="none"
-linker_b="none"
-min_tag_len=18
-
-
-## Load required module
-#module load pigz
 
 ## Move to output directory
 cd ${PBS_O_WORKDIR}
@@ -85,10 +70,6 @@ echo "
     ${data_dir}/${r2_fastq}
 " >> ${log_file}
 
-
-#${main_prog} stag -W -T 18 -t ${n_thread} -O ${run} \
-#    ${data_dir}/${r1_fastq} ${data_dir}/${r2_fastq} \
-#    2>> ${log_file}
 
 if [ ${linker_a} == "none" ]; then
     # Default linker sequence
@@ -157,8 +138,6 @@ if [ ${all_steps} == true ]
 then
     # Set the resource parameters for the computing cluster
     # depending on the run type (miseq or hiseq)
-    n_thread=20
-    mem=60
     
     if [ ${run_type} == "miseq" ]
     then

@@ -15,7 +15,8 @@
 ## The help message:
 function usage
 {
-    echo -e "usage: extract_chia_pet_pipeline_stats.pbs -c CONF -o OUT_DIR
+    echo -e "usage: qsub -F \"--conf ${conf} --out_dir ${out_dir\"
+    4.extract_summary_stats.pbs
     " 
 }
 
@@ -45,10 +46,6 @@ cd ${out_dir}
 
 # Add dependency dir to path
 export PATH=${dep_dir}:${PATH}
-
-## Load the required module
-#module load bedtools/2.22.0
-#module load samtools/1.5
 
 ## Set the output file
 out_file=${run}.final_stats.tsv
@@ -250,15 +247,6 @@ done
 echo -e "pets_number>10\t"$(zcat *cis.gz | awk '$7 >10 {print}' | \
     wc -l | xargs printf "%'.f") >> ${out_file}
 
-## Write loops with peak support
-#if [ ${ip_factor} == 'CTCF' ]; then
-#    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
-#else
-#    loops_pk_supp=$( cat ${run}.e500.clusters.cis.BE3.peak_annot.E2 | wc -l )
-#fi
-#
-#echo -e "Loops_with_peak_support\t"${loops_pk_supp} >> ${out_file}
-
 ## Clusters (inter-chr)
 # Write inter-chr cluster count
 inter_cluster=$( printf "%'.f" ${inter_cluster} )
@@ -283,8 +271,6 @@ echo -e "pets_number>10\t"$(zcat *trans.gz | \
 
 if [ ${all_steps} == true ] && [ ${snp_file} != "none" ]
 then
-    n_thread=20
-    mem=60
     
     if [ ${run_type} == "miseq" ]
     then

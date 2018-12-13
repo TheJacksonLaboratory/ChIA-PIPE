@@ -12,19 +12,11 @@
 # 2018
 # The Jackson Laboratory for Genomic Medicine
 
-
-# Default values for the arguments
-#run="LHG0018"
-#peak_caller="macs2"
-#input_control="/projects/capurd/chia_pet/test_data/OUTPUT_mapped.sC.q20.bam"
-#bin_dir="/projects/capurd/chia_pet/chia_pet_tool_2.1"
-#out_dir="/projects/capurd/testing_chia_pet"
-#all_steps=true
-
 # The help message:
 function usage
 {
-    echo -e "usage: bash 3.call_peaks.pbs -c CONF -o OUT_DIR
+    echo -e "usage: qsub -F \"--conf ${conf} --out_dir ${out_dir}\" 
+    3.call_peaks.pbs
     " 
 }
 
@@ -55,14 +47,8 @@ cd ${out_dir}
 # Add dependency dir to path
 export PATH=${dep_dir}:${PATH}
 
-# Load the required modules
-#module load bedtools/2.26.0
-#module load samtools/1.5
-
-
 # Create name of the log file
 log_file=3.${run}.call_peaks.log
-
 
 # Print arguments to ensure correct parsing
 echo "
@@ -142,19 +128,14 @@ fi
 
 if [ ${peak_caller} == "spp" ] || [ ${peak_caller} == "SPP" ]
 then
-    # Load R
-    #module load R/3.2.1
-    
     # Report SPP to log file
     echo -e "`date` Peak calling using SPP..\n" >> ${log_file}
     
     # Call peaks using SPP
-    z_thresh=6
     R --vanilla < ${bin_dir}/util/scripts/spp.R --args ${run}.for.BROWSER.bam \
         ${input_control} ${bin_dir} ${z_thresh}
 else
     # Load MACS2
-    #module load MACS/2.1.0.20151222
     
     # Report MACS2 to log file
     echo -e "`date` Peak calling using MACS2..\n" >> ${log_file}
@@ -195,7 +176,7 @@ cat ${be3_file}.peak_annot | awk '{ if ( $8 >= 1 ) print }' \
 
 ####
 # Sort peak-supported loops by PET count
-#sort -k7,7n ${be3_file}.peak_annot.E2 > ${be3_file}.peak_annot.E2.freq_sorted
+sort -k7,7n ${be3_file}.peak_annot.E2 > ${be3_file}.peak_annot.E2.freq_sorted
 
 ## Get PET count cutoff for calling CCDs
 ## Top one-third (67th percentile)
@@ -209,7 +190,6 @@ min_pet_count=$( sed "${cutoff_line}q;d" \
     ${be3_file}.peak_annot.E2.freq_sorted | awk '{ print $7 }' )
 
 ### Call CCDs
-#module load bedtools/2.26.0
 
 # Set input file for calling CCDs
 ccd_input="${be3_file}.peak_annot.E2"
@@ -234,7 +214,8 @@ awk -v OFS='\t' '{ $4 = $3 - $2} 1' ${ccd_input}.anchor_mids.sorted.merge \
     > ${ccd_input}.anchor_mids.sorted.merge.span
 
 # Filter out CCDs with span < 10kb
-awk -v OFS='\t' '{ if ( $4 > 25000 ) print $0 }' ${ccd_input}.anchor_mids.sorted.merge.span \
+awk -v OFS='\t' '{ if ( $4 > 25000 ) print $0 }' \
+    ${ccd_input}.anchor_mids.sorted.merge.span \
     > ${ccd_input}.anchor_mids.sorted.merge.span.ccd
 
 # Remove CCD intermediate files
@@ -248,15 +229,11 @@ rm -f *.anchor_mids.sorted.merge.span
 if [ ${all_steps} == true ]
 then
     cd ${PBS_O_WORKDIR}
-    
-    n_thread=20
-    mem=60
-    wall_time=4
-    
+        
     ### 4. Extract summary stats
     # Submit the job
     job_4=$( qsub -F "--conf ${conf} --out_dir ${out_dir}" \
-    -l nodes=1:ppn=${n_thread},mem=${mem}gb,vmem=${mem}gb,walltime=${wall_time}:00:00 \
+    -l nodes=1:ppn=1,mem=6gb,vmem=6gb,walltime=4:00:00 \
     -j oe -o ${out_dir}/4.${run}.extract_summary_stats.o \
     ${bin_dir}/4.extract_summary_stats.pbs )
 fi

@@ -17,22 +17,10 @@
 ## The help message:
 function usage
 {
-    echo -e "usage: bash 2.map.pbs -c CONF -o OUT_DIR -t TAG_NAME
+    echo -e "usage: qsub -F \"--conf ${conf} --out_dir ${out_dir} 
+    --tag_name ${tag_name}\" 2.map.pbs
     " 
 }
-
-## Default values for the arguments
-#main_prog="/data/wongc/cpu-dir/cpu-dir/cpu"
-#run="LHG0018"
-#tag_name="none"
-#genome="hg19"
-#ctrl_genome="none"
-#fasta="/data/mzheng/bridge_chiapet/genome/hg19/hg19.fa"
-#juicer="/projects/tjongh/chiapet_script/encode_singleLinker/\
-#juicer_tools.1.6.2_linux_jcuda.0.8.jar"
-#out_dir="/projects/capurd/testing_chia_pet/${run}"
-#all_steps=true
-
 
 ## Parse arguments from the command line
 while [ "$1" != "" ]; do
@@ -55,12 +43,6 @@ while [ "$1" != "" ]; do
     shift
 done
 
-# Setting clustering parameters
-self_bp=8000
-exten_bp=500
-
-# Set hybrid status
-hybrid="none"
 
 ## Put output files in subdirectory named after the run
 cd ${PBS_O_WORKDIR}
@@ -79,17 +61,10 @@ else
     suffix="UU"
 fi
 
-
 # Update mapping parameters for hybrid data
 if [ ${hybrid} != "none" ]; then
     map_qual=0
 fi
-
-
-## Load required modules
-#module load pigz
-#module load java/1.7.0
-#module load perl/5.26.0
 
 ## Create name of the log file
 log_file=2.${run}.map_${tag_name}.log
@@ -119,8 +94,6 @@ echo "
 " >> ${log_file}
 
 # Mapping
-n_thread=20
-
 ${main_prog} memaln -T ${map_qual} -t ${n_thread} ${fasta} \
     ${run}.${tag_name}.fastq.gz 1> ${run}.${tag_name}.sam 2>> ${log_file}
 
@@ -208,30 +181,7 @@ then
 	be3_file="${run}.e500.clusters.cis.BE3"
     zcat ${cis_file} | awk '{ if ( $7 >= 3 ) print }' > ${be3_file}
     
-
         
-    
-	# Get intrachrom pet count
-    #intra_chr_pet=$( cat ${run}.singlelinker.paired.UU.nr.span.xls | \
-    #    grep "second/best<0.95" -A5 | \
-    #    awk -F '[\t]' '{if(NR==5)print $2}' )
-    
-    # Get max pet count of a loop
-    #loop_max=$( sort -nrk7 ${be2_file}.peak_annot.E2 | head -n1 | \
-    #    awk '{ print $7 }' )
-    
-	# Create a file with normalized PET count of loops	
-	#awk -v x=${intra_chr_pet} '{ print $0, $7/x }' \
-	#    ${be3_file}.peak_annot.E2 \
-	#    > ${be3_file}.peak_annot.E2.norm
-	
-	
-	### Multi-resolution matrix file for Juicebox
-    # Generate .hic file
-    #java -Xmx32g -jar ${juicer} pre -r \
-    #    2500000,1000000,500000,250000,100000,50000,25000,10000,5000,1000 \
-    #    ${run}.e500.juice.gz ${run}.hic ${genome}
-    
     ### Make .hic file for Juicebox
     ### BAM --> pairs --> hic
     # BAM to pairs
@@ -279,13 +229,7 @@ then
     ## Remove intermediary file
     #rm ${out_dir}/temp_chrom_bins.bed
     #rm ${out_dir}/${run}.e500.higlass.cool
-        
-    # Split BAM file
-    #if [ ${ctrl_genome} != "none" ] && [ ${ctrl_genome} != "None" ]
-    #then
-    #    module load python/2.7.10
-    #    ${bin_dir}/split_bam_by_species.py -g ${genome} -c ${ctrl_genome}
-    #fi
+
 fi
 
 # Report completion of mapping
@@ -308,8 +252,6 @@ then
     
     # Set the resource parameters for the computing cluster
     # depending on the run type (miseq or hiseq)
-    n_thread=20
-    mem=60
     
     if [ ${run_type} == "miseq" ]
     then
