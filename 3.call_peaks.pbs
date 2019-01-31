@@ -183,6 +183,25 @@ ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
 ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
     -l ${be3_file}.peak_annot.BE1
 
+
+## Annotate enhancer-promoter loops
+# Add a label column to loop file
+cat ${be3_file}.peak_annot.BE1 | awk -v OFS='\t' '{ print $0, "loop_"NR, "." }' \
+    > ${be3_file}.peak_annot.BE1.labeled
+
+# Intersect loops with promoters
+pairToBed -a ${be3_file}.peak_annot.BE1.labeled -b ${promoter_bed_file} \
+    > ${be3_file}.peak_annot.BE1.labeled.promoters
+
+# Intersect loops with enhancers
+pairToBed -a ${be3_file}.peak_annot.BE1.labeled -b ${enhancer_bed_file} \
+    > ${be3_file}.peak_annot.BE1.labeled.enhancers
+
+# Get final enhancer-promoter loops
+# FIXME
+
+
+
 ####
 # Sort peak-supported loops by PET count
 sort -k7,7n ${be3_file}.peak_annot.E2 > ${be3_file}.peak_annot.E2.freq_sorted

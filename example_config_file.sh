@@ -57,6 +57,11 @@ peak_caller="macs2"
 # The folder in BASIC browser to which to upload the tracks
 basic_folder="New user testing"
 
+# BED file of promoters for annotating loops
+promoter_bed_file="none"
+
+# BED file of enhancers for annotating loops 
+enhancer_bed_file="none"
 
 
 ## 3) Advanced options: how to run the pipeline
