@@ -233,6 +233,13 @@ rm -f *.anchor_mids.sorted.merge
 rm -f *.anchor_mids.sorted.merge.span
 
 
+# Create a Juicebox 2D annotation file of CCDs
+awk 'BEGIN{printf("chr1\tx1\tx2\tchr2\ty1\ty2\tcolor\n");} 
+    {printf("%s\t%s\t%s\t%s\t%s\t%s\t0,204,255\n",$1,$2,$3,$1,$2,$3);}' \
+    ${ccd_input}.anchor_mids.sorted.merge.span.ccd \
+    > ${run}_ccd_juicebox_2d_annotation.txt
+
+
 ####
 
 if [ ${all_steps} == true ]
