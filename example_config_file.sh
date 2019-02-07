@@ -3,7 +3,14 @@
 ### 1) Library information
 
 # The name of the sequencing run
+# Unique identifier for the library being processed
 run="LDK0004-ds"
+
+# Experiment type
+#   "ChIA-PET"
+#   "HiChIP"
+#   "PLAC-seq"
+experiment_type="ChIA-PET"
 
 # The type of sequencing run:
 #    "miseq" - around 30 million reads
