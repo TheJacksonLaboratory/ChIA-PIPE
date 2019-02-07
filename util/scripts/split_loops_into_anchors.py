@@ -1,4 +1,3 @@
-#!/projects/capurd/chia_pet/chia_pet_tool_2/conda/bin/python
 import glob
 import numpy as np
 import argparse

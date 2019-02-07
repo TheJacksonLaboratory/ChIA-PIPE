@@ -618,7 +618,7 @@ echo "$0 done" >> ${log_file}
 be3_file="${run}.e500.clusters.cis.BE3"
 peak_file="${run}.for.BROWSER.spp.z6.broadPeak"
 
-${bin_dir}/util/scripts/annotate_loops_with_peak_support.py \
+${dep_dir}/python ${bin_dir}/util/scripts/annotate_loops_with_peak_support.py \
     -l ${be3_file} -p ${peak_file}
 
 # Create subsetted files by peak support
@@ -632,11 +632,11 @@ cat ${be3_file}.peak_annot | awk '{ if ( $8 >= 1 ) print }' \
 
 # Convert loops to WashU format
 # 2 anchors
-${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
+${dep_dir}/python ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
     -l ${be3_file}.peak_annot.E2
 
 # 1 or more anchor
-${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
+${dep_dir}/python ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
     -l ${be3_file}.peak_annot.BE1
 
 
@@ -661,7 +661,8 @@ min_pet_count=$( sed "${cutoff_line}q;d" \
 # Set input file for calling CCDs
 ccd_input="${be3_file}.peak_annot.E2"
 
-${bin_dir}/util/scripts/get_loop_anchor_midpoints.py -l ${ccd_input} \
+${dep_dir}/python ${bin_dir}/util/scripts/get_loop_anchor_midpoints.py \
+    -l ${ccd_input} \
     -m ${min_pet_count}
 
 
