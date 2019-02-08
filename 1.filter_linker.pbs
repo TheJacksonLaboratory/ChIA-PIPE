@@ -141,7 +141,7 @@ elif [ ${experiment_type} == 'PLAC-seq' ]; then
         --out_dir  ${out_dir} \
         --linker  ${linker_a} \
         --min_tag_len  ${min_tag_len}
-
+fi
 
 ## Compress files
 pigz -p ${n_thread} ${run}.singlelinker.paired.fastq 2>> ${log_file}
