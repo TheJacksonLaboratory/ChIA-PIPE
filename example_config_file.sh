@@ -39,7 +39,7 @@ r2_fastq="LDK0004-ds_*_R2_*.fastq.gz"
 bin_dir="/projects/encode/chia_pipe"
 
 # The directory of the local install of ChIA-PIPE dependencies
-dep_dir="dep_dir"
+dep_dir="../dep_dir"
 
 # The name of the primary genome
 # For example: "hg19", "hg38", "dm3", "mm9", "mm10"

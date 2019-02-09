@@ -45,8 +45,13 @@ ln -s anaconda2/bin/conda conda
 
 
 ## Install pysam (Python package, not included with conda)
-./conda install -c bioconda pysam
+./conda install -c anaconda pysam
 
+## Install biopython (Python package)
+./conda install -c anaconda biopython
+
+## Install regex (Python package)
+./conda install -c anaconda regex
 
 ## Install MACS peak caller
 ./conda install -c bioconda macs2

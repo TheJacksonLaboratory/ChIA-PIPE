@@ -173,14 +173,14 @@ def standardize_read_name(r):
     return r
 
 
-def open_output_files(out_dir, run):
+def open_output_files(run):
     """
     Open output files in appending mode.
     """
-    none_file = '%s/%s.none.fastq' % (out_dir, run)
-    one_tag_file = '%s/%s.singlelinker.single.fastq' % (out_dir, run)
-    two_tag_file = '%s/%s.singlelinker.paired.fastq' % (out_dir, run)
-    conflict_file = '%s/%s.conflict.fastq' % (out_dir, run)
+    none_file = '%s.none.fastq' % run
+    one_tag_file = '%s.singlelinker.single.fastq' % run
+    two_tag_file = '%s.singlelinker.paired.fastq' % run
+    conflict_file = '%s.conflict.fastq' % run
     
     if os.path.exists(none_file):
         os.remove(none_file)
@@ -213,7 +213,7 @@ def close_output_files(a_none, a_one_tag, a_two_tag, a_conflict):
 
 
 def filter_hichip_linker(
-    r1_file, r2_file, linker, n_mismatch, min_tag_len, run, out_dir):
+    r1_file, r2_file, linker, n_mismatch, min_tag_len, run):
     """
     Filter read pairs for HiChIP linker and partition into categories.
     
@@ -234,11 +234,7 @@ def filter_hichip_linker(
             The sequencing run ID.
         out_dir (str):
             The output directory to which to write the results.
-    """
-    # Initialize output directory
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-    
+    """   
     # Get R1 reads
     #r1_list = list(SeqIO.parse(r1_file, "fastq"))
     r1_iter = FastqPhredIterator(gzip.open(r1_file, 'rt'))
@@ -250,7 +246,7 @@ def filter_hichip_linker(
     # Initialize results dictionary for partitioning reads
     
     # Open files
-    a_none, a_one_tag, a_two_tag, a_conflict = open_output_files(out_dir, run)
+    a_none, a_one_tag, a_two_tag, a_conflict = open_output_files(run)
     
     # Iterate over read pairs
     for r1, r2 in itertools.izip(r1_iter, r2_iter):
@@ -314,10 +310,6 @@ def parse_command_line_args():
 		help=('The ID of the run.'))
     
 	required.add_argument(
-		'-o', '--out_dir', required=True,
-		help=('The output directory.'))
-    
-	required.add_argument(
 		'-l', '--linker', required=True,
 		help=('The linker sequence (e.g., GATCGATC).'))
 	
@@ -343,6 +335,5 @@ if __name__ == '__main__':
         args.linker,
         n_mismatch,
         args.min_tag_len,
-        args.run,
-        args.out_dir)
+        args.run)
     

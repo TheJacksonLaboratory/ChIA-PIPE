@@ -37,11 +37,11 @@ done
 # Source the config file to get the parameter values
 source ${conf}
 
-# Add dependency dir to path
-workdir=$( pwd)
-dep_dir=$( cd ${dep_dir} && pwd )
-export PATH=${dep_dir}:${PATH}
-cd ${workdir}
+## Add dependency dir to path
+#workdir=$( pwd)
+#dep_dir=$( cd ${dep_dir} && pwd )
+#export PATH=${dep_dir}:${PATH}
+#cd ${workdir}
 
 # Set the output directory for writing files
 out_dir="${run}"
@@ -135,22 +135,27 @@ if [ ${experiment_type} == 'ChIA-PET' ]; then
 elif [ ${experiment_type} == 'HiChIP' ]; then
     # Linker filtering for HiChIP data
     ${dep_dir}/python ${bin_dir}/util/scripts/filter_hichip_linker.py \
-        --r1_file  ${r1_fastq} \
-        --r2_file  ${r2_fastq} \
+        --r1_file  ${data_dir}/${r1_fastq} \
+        --r2_file  ${data_dir}/${r2_fastq} \
         --run  ${run} \
-        --out_dir  ${out_dir} \
         --linker  ${linker_a} \
         --min_tag_len  ${min_tag_len}
+    
+    # Write linker filtering stats
+    bash ${bin_dir}/util/scripts/write_hichip_linker_stats.sh -c ../${conf}
 
 elif [ ${experiment_type} == 'PLAC-seq' ]; then
     # Linker filtering for PLAC-seq data
     ${dep_dir}/python ${bin_dir}/util/scripts/filter_hichip_linker.py \
-        --r1_file  ${r1_fastq} \
-        --r2_file  ${r2_fastq} \
+        --r1_file  ${data_dir}/${r1_fastq} \
+        --r2_file  ${data_dir}/${r2_fastq} \
         --run  ${run} \
-        --out_dir  ${out_dir} \
         --linker  ${linker_a} \
         --min_tag_len  ${min_tag_len}
+    
+    # Write linker filtering stats
+    bash ${bin_dir}/util/scripts/write_hichip_linker_stats.sh -c ../${conf}
+    
 fi
 
 ## Compress files
@@ -701,7 +706,7 @@ awk 'BEGIN{printf("chr1\tx1\tx2\tchr2\ty1\ty2\tcolor\n");}
 ############### 4. Extract summary stats
 
 bash ${bin_dir}/util/scripts/extract_summary_stats.sh \
-    --conf ${conf} --out_dir ${out_dir}
+    --conf ../${conf} --out_dir ${out_dir}
 
 
 ###############
