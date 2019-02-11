@@ -185,21 +185,35 @@ ${dep_dir}/python ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
 
 
 ## Annotate enhancer-promoter loops
-# Add a label column to loop file
-cat ${be3_file}.peak_annot.BE1 | awk -v OFS='\t' '{ print $0, "loop_"NR, "." }' \
-    > ${be3_file}.peak_annot.BE1.labeled
+# Split loops into anchors
+${dep_dir}/python ${bin_dir}/util/scripts/split_loops_into_anchors.py \
+    -l ${be3_file}.peak_annot.BE1
 
-# Intersect loops with promoters
-pairToBed -a ${be3_file}.peak_annot.BE1.labeled -b ${promoter_bed_file} \
-    > ${be3_file}.peak_annot.BE1.labeled.promoters
+left_anch=${be3_file}.peak_annot.BE1.left_anchors
+right_anch=${be3_file}.peak_annot.BE1.right_anchors
 
-# Intersect loops with enhancers
-pairToBed -a ${be3_file}.peak_annot.BE1.labeled -b ${enhancer_bed_file} \
-    > ${be3_file}.peak_annot.BE1.labeled.enhancers
 
-# Get final enhancer-promoter loops
-# FIXME
+# Intersect anchors with enhancers
+bedtools intersect -u -a ${left_anch} -b ${enhancer_bed_file} \
+    > ${left_anch}.enhancers
 
+bedtools intersect -u -a ${right_anch} -b ${enhancer_bed_file} \
+    > ${right_anch}.enhancers
+
+
+# Intersect anchors with promoters
+bedtools intersect -u -a ${left_anch} -b ${promoter_bed_file} \
+    > ${left_anch}.promoters
+
+bedtools intersect -u -a ${right_anch} -b ${promoter_bed_file} \
+    > ${right_anch}.promoters
+
+# Annotate enhancer promoter loops
+${dep_dir}/python ${bin_dir}/util/scripts/annotate_enhancer_promoter_loops.py \
+    --left_enhancers ${left_anch}.enhancers \
+    --right_enhancers ${right_anch}.enhancers \
+    --left_promoters ${left_anch}.promoters \
+    --right_promoters ${right_anch}.promoters
 
 
 ####

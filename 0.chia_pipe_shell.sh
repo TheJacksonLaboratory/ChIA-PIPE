@@ -646,6 +646,39 @@ ${dep_dir}/python ${bin_dir}/util/scripts/convert_loops_to_washu_format.py \
     -l ${be3_file}.peak_annot.BE1
 
 
+## Annotate enhancer-promoter loops
+# Split loops into anchors
+${dep_dir}/python ${bin_dir}/util/scripts/split_loops_into_anchors.py \
+    -l ${be3_file}.peak_annot.BE1
+
+left_anch=${be3_file}.peak_annot.BE1.left_anchors
+right_anch=${be3_file}.peak_annot.BE1.right_anchors
+
+
+# Intersect anchors with enhancers
+bedtools intersect -u -a ${left_anch} -b ${enhancer_bed_file} \
+    > ${left_anch}.enhancers
+
+bedtools intersect -u -a ${right_anch} -b ${enhancer_bed_file} \
+    > ${right_anch}.enhancers
+
+
+# Intersect anchors with promoters
+bedtools intersect -u -a ${left_anch} -b ${promoter_bed_file} \
+    > ${left_anch}.promoters
+
+bedtools intersect -u -a ${right_anch} -b ${promoter_bed_file} \
+    > ${right_anch}.promoters
+
+# Annotate enhancer promoter loops
+${dep_dir}/python ${bin_dir}/util/scripts/annotate_enhancer_promoter_loops.py \
+    --left_enhancers ${left_anch}.enhancers \
+    --right_enhancers ${right_anch}.enhancers \
+    --left_promoters ${left_anch}.promoters \
+    --right_promoters ${right_anch}.promoters
+
+
+
 ####
 # Sort peak-supported loops by PET count
 sort -k7,7n ${be3_file}.peak_annot.E2 > ${be3_file}.peak_annot.E2.freq_sorted

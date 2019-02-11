@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 
 
-def split_loops_into_anchors(file_name, extend=1000):
+def split_loops_into_anchors(file_name):
     """
     Split loops into anchors.
     """
@@ -28,28 +28,26 @@ def split_loops_into_anchors(file_name, extend=1000):
             
             # Left anchor
             chrom_a = entry[0]
-            start_a = int(entry[1]) - extend
+            start_a = int(entry[1])
             start_a = str(max(0, start_a))
             
-            end_a = str(int(entry[2]) + extend)
+            end_a = str(int(entry[2]))
             
             left.append(
-                [chrom_a, start_a, end_a, loop_id, '0', '+',
-                 pet_count, n_anchor])
+                [chrom_a, start_a, end_a, loop_id, pet_count, n_anchor])
             
             # Right anchor
             chrom_b = entry[3]
-            start_b = int(entry[4]) - extend
+            start_b = int(entry[4])
             start_b = str(max(0, start_b))
             
-            end_b = str(int(entry[5]) + extend)
+            end_b = str(int(entry[5]))
             
             right.append(
-                [chrom_b, start_b, end_b, loop_id, '0', '+',
-                 pet_count, n_anchor])            
+                [chrom_b, start_b, end_b, loop_id, pet_count, n_anchor])            
     
     ## Write left anchors to BED file
-    left_file = file_name + '.L_anchors.exten_%s.bed' % extend
+    left_file = file_name + '.left_anchors'
     
     with open(left_file, 'w') as out:
         for row in left:
@@ -57,7 +55,7 @@ def split_loops_into_anchors(file_name, extend=1000):
     
     
     ## Write right anchors to BED file
-    right_file = file_name + '.R_anchors.exten_%s.bed' % extend
+    right_file = file_name + '.right_anchors'
     
     with open(right_file, 'w') as out:
         for row in right:
@@ -92,6 +90,4 @@ def parse_command_line_args():
 if __name__ == '__main__':
     
     args = parse_command_line_args()
-    
-    extend = 2500
-    split_loops_into_anchors(args.loop_file, extend)
+    split_loops_into_anchors(args.loop_file)
