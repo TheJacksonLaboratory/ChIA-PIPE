@@ -1,10 +1,4 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1
-#PBS -l walltime=1:00:00
-#PBS -l mem=2GB
-#PBS -l vmem=2GB
-#PBS -j oe
-
 
 # ChIA-PIPE
 #         Starting point for launching ChIA-PIPE

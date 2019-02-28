@@ -79,6 +79,8 @@ def annotate_enhancer_promoter_loops(
     
     with open(out_file, 'w') as out:
         for id in sorted(loops.keys()):
+            if 'left' not in loops[id] or 'right' not in loops[id]:
+                continue
             
             if 'P' in loops[id]['left'] and 'P' in loops[id]['right']:
                 annot = 'PP'
