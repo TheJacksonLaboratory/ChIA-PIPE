@@ -1,6 +1,6 @@
 ## ChIA-PIPE  README
 ### The Jackson Laboratory for Genomic Medicine
-### 26 November 2018, Version 1.0
+### Version 1.0, (November 26, 2018) 
 #
 
 ## (a) Initialize outer working directory
