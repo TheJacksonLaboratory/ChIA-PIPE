@@ -11,7 +11,7 @@ cd testing_chia_pipe
 
 ## (b) Clone ChIA-PIPE
 ```bash
-git clone git@github.com:TheJacksonLaboratory/chia_pipe.git
+git clone https://github.com/TheJacksonLaboratory/ChIA-PIPE.git
 ```
 
 ## *or* (b.ii) Download ChIA-PIPE
