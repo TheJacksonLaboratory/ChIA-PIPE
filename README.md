@@ -23,6 +23,7 @@ wget git@github.com:TheJacksonLaboratory/chia_pipe.zip
 ```bash
 cd ChIA-PIPE/
 dep_dir="dep_dir"
+mkdir $dep_dir
 bash local_install_chia_pipe_dependencies.sh -i ${dep_dir}
 ```
 
